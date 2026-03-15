@@ -1,6 +1,6 @@
 # ============================================================
 #   Shopping Cart System — Python Flask Backend
-#   Group 6 | BE II Semester CSE-A | A.Y 2025-2026
+#   Group 11 | BE II Semester CSE-A | A.Y 2025-2026
 #   Scientific Programming Seminar | 4-4-2026
 #
 #   HOW TO RUN:
@@ -138,7 +138,7 @@ def clear_cart():
 if __name__ == "__main__":
     print()
     print("=" * 54)
-    print("   Shopping Cart System  —  Group 6")
+    print("   Shopping Cart System  —  Group 11")
     print("   BE II Semester CSE-A  |  4-4-2026")
     print("=" * 54)
     print()
