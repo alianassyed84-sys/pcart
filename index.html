@@ -31,14 +31,17 @@
         ::-webkit-scrollbar {
             width: 12px;
         }
+
         ::-webkit-scrollbar-track {
             background: var(--void);
         }
+
         ::-webkit-scrollbar-thumb {
             background: var(--ocean);
             border-radius: 6px;
             border: 2px solid var(--void);
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: var(--sky);
         }
@@ -958,30 +961,36 @@
         }
 
         .kw {
-            color: #00E5FF; /* Bright Neon Cyan */
+            color: #00E5FF;
+            /* Bright Neon Cyan */
             font-weight: 700;
         }
 
         .fn {
-            color: #2ECC71; /* Bright Emerald Green */
+            color: #2ECC71;
+            /* Bright Emerald Green */
             font-weight: 700;
         }
 
         .st {
-            color: #FFD600; /* Vivid Yellow-Gold */
+            color: #FFD600;
+            /* Vivid Yellow-Gold */
         }
 
         .cm {
-            color: #94A3B8; /* Lighter Grey-Blue for comments */
+            color: #94A3B8;
+            /* Lighter Grey-Blue for comments */
             font-style: italic;
         }
 
         .pn {
-            color: #F8FAFC; /* Near White for punctuation */
+            color: #F8FAFC;
+            /* Near White for punctuation */
         }
 
         .vr {
-            color: #FF5D73; /* Vibrant Salmon/Red */
+            color: #FF5D73;
+            /* Vibrant Salmon/Red */
             font-weight: 600;
         }
 
@@ -1513,7 +1522,7 @@
             border: 1px solid rgba(0, 180, 216, .2);
             border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 0 40px rgba(0, 180, 216, .08), 0 16px 40px rgba(0,0,0,.4);
+            box-shadow: 0 0 40px rgba(0, 180, 216, .08), 0 16px 40px rgba(0, 0, 0, .4);
             opacity: 0;
             transform: translateY(30px);
             transition: opacity .6s ease, transform .6s ease;
@@ -1600,11 +1609,13 @@
             font-family: 'Fira Code', monospace;
             font-size: .8rem;
             color: var(--gold);
-            border: 1px solid rgba(0,180,216,.1);
+            border: 1px solid rgba(0, 180, 216, .1);
         }
 
         @media(max-width: 768px) {
-            .backend-layout { grid-template-columns: 1fr; }
+            .backend-layout {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* ── FOOTER ── */
@@ -1651,8 +1662,18 @@
         }
 
         @keyframes arrowPulse {
-            0%, 100% { opacity: 0.3; transform: translateY(-50%) translateX(0); }
-            50% { opacity: 1; transform: translateY(-50%) translateX(5px); color: var(--glowlt); }
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: translateY(-50%) translateX(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(-50%) translateX(5px);
+                color: var(--glowlt);
+            }
         }
 
         .confetti-p {
@@ -1663,8 +1684,15 @@
         }
 
         @keyframes confettiFall {
-            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) rotate(var(--tr)); opacity: 0; }
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--tx), var(--ty)) rotate(var(--tr));
+                opacity: 0;
+            }
         }
 
         /* Responsive refinements */
@@ -1724,7 +1752,8 @@
                 padding: 14px 24px;
             }
 
-            .nav-links, .nav-badge {
+            .nav-links,
+            .nav-badge {
                 display: none;
             }
 
@@ -1755,7 +1784,8 @@
                 font-size: 1.4rem;
             }
 
-            .btn-primary, .btn-outline {
+            .btn-primary,
+            .btn-outline {
                 width: 100%;
                 padding: 12px 24px;
             }
@@ -1808,19 +1838,48 @@
         }
 
         @keyframes rowIn {
-            0% { opacity: 0; transform: translateX(30px) scale(0.9); }
-            100% { opacity: 1; transform: translateX(0) scale(1); }
+            0% {
+                opacity: 0;
+                transform: translateX(30px) scale(0.9);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
         }
 
         @keyframes rowOut {
-            0% { opacity: 1; transform: translateX(0) scale(1); }
-            100% { opacity: 0; transform: translateX(-30px) scale(0.9); height: 0; margin: 0; padding: 0; }
+            0% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(-30px) scale(0.9);
+                height: 0;
+                margin: 0;
+                padding: 0;
+            }
         }
 
         @keyframes pulseTotal {
-            0% { transform: scale(1); text-shadow: 0 0 0 rgba(0,180,216,0); }
-            50% { transform: scale(1.1); text-shadow: 0 0 20px rgba(0,180,216,0.8); color: var(--white); }
-            100% { transform: scale(1); text-shadow: 0 0 0 rgba(0,180,216,0); }
+            0% {
+                transform: scale(1);
+                text-shadow: 0 0 0 rgba(0, 180, 216, 0);
+            }
+
+            50% {
+                transform: scale(1.1);
+                text-shadow: 0 0 20px rgba(0, 180, 216, 0.8);
+                color: var(--white);
+            }
+
+            100% {
+                transform: scale(1);
+                text-shadow: 0 0 0 rgba(0, 180, 216, 0);
+            }
         }
 
         .pulse-anim {
@@ -1844,7 +1903,10 @@
     </div>
 
     <div class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="m18 15-6-6-6 6" />
+        </svg>
     </div>
 
     <canvas id="particles"></canvas>
@@ -1997,26 +2059,30 @@
                     <div class="step-code">cart = {}</div>
                     <div class="step-detail">Initialize empty dictionary</div>
                 </div>
-                <div class="algo-step" style="transition-delay:.08s"><span class="step-arrow pulsing" style="animation-delay:0.2s">→</span>
+                <div class="algo-step" style="transition-delay:.08s"><span class="step-arrow pulsing"
+                        style="animation-delay:0.2s">→</span>
                     <div class="step-num" style="border-color:rgba(0,180,216,.4)">02</div>
                     <div class="step-title">ADD</div>
                     <div class="step-code">cart[name] = price</div>
                     <div class="step-detail">Key = name, Value = price</div>
                 </div>
-                <div class="algo-step" style="transition-delay:.16s"><span class="step-arrow pulsing" style="animation-delay:0.4s">→</span>
+                <div class="algo-step" style="transition-delay:.16s"><span class="step-arrow pulsing"
+                        style="animation-delay:0.4s">→</span>
                     <div class="step-num"
                         style="border-color:rgba(255,183,3,.4);color:var(--gold);background:rgba(255,183,3,.1)">03</div>
                     <div class="step-title">REMOVE</div>
                     <div class="step-code">del cart[name]</div>
                     <div class="step-detail">Delete key-value pair</div>
                 </div>
-                <div class="algo-step" style="transition-delay:.24s"><span class="step-arrow pulsing" style="animation-delay:0.6s">→</span>
+                <div class="algo-step" style="transition-delay:.24s"><span class="step-arrow pulsing"
+                        style="animation-delay:0.6s">→</span>
                     <div class="step-num">04</div>
                     <div class="step-title">VIEW</div>
                     <div class="step-code">cart.items()</div>
                     <div class="step-detail">Iterate all products</div>
                 </div>
-                <div class="algo-step" style="transition-delay:.32s"><span class="step-arrow pulsing" style="animation-delay:0.8s">→</span>
+                <div class="algo-step" style="transition-delay:.32s"><span class="step-arrow pulsing"
+                        style="animation-delay:0.8s">→</span>
                     <div class="step-num">05</div>
                     <div class="step-title">TOTAL</div>
                     <div class="step-code">sum(cart.values())</div>
@@ -2127,7 +2193,9 @@
         <div class="section-inner">
             <div class="section-tag">BACKEND CODE</div>
             <h2 class="section-title">Python <span>Backend</span></h2>
-            <p class="section-desc">The complete <code style="font-family:'Fira Code',monospace;color:var(--glow);background:rgba(0,180,216,.1);padding:2px 8px;border-radius:4px;">shopping_cart.py</code> — a simple dictionary-based program that handles all three conditions using a while loop menu.</p>
+            <p class="section-desc">The complete <code
+                    style="font-family:'Fira Code',monospace;color:var(--glow);background:rgba(0,180,216,.1);padding:2px 8px;border-radius:4px;">shopping_cart.py</code>
+                — a simple dictionary-based program that handles all three conditions using a while loop menu.</p>
             <div class="backend-layout">
                 <div class="backend-file">
                     <div class="backend-file-bar">
@@ -2137,7 +2205,7 @@
                         <div class="backend-file-name">shopping_cart.py</div>
                     </div>
                     <div class="backend-file-body">
-<pre>
+                        <pre>
 <span class="cm"># ============================================================</span>
 <span class="cm">#   Shopping Cart System</span>
 <span class="cm">#   Group 6 | BE II Semester CSE-A</span>
@@ -2208,20 +2276,27 @@
                     <div class="backend-card">
                         <div class="backend-card-label">CONDITION 1</div>
                         <div class="backend-card-title">➕ Add Product &amp; Price</div>
-                        <div class="backend-card-desc">Stores any product name as a <em>key</em> and its price as the <em>value</em> in the cart dictionary. Instant O(1) insertion.</div>
+                        <div class="backend-card-desc">Stores any product name as a <em>key</em> and its price as the
+                            <em>value</em> in the cart dictionary. Instant O(1) insertion.
+                        </div>
                         <div class="backend-card-code">cart[name] = price</div>
                     </div>
                     <div class="backend-card">
                         <div class="backend-card-label" style="color:var(--gold);">CONDITION 2</div>
                         <div class="backend-card-title">🗑️ Remove Product</div>
-                        <div class="backend-card-desc">Checks if the product exists in the dictionary, then deletes the key-value pair. Prints a warning if not found.</div>
+                        <div class="backend-card-desc">Checks if the product exists in the dictionary, then deletes the
+                            key-value pair. Prints a warning if not found.</div>
                         <div class="backend-card-code" style="color:var(--amber);">del cart[name]</div>
                     </div>
                     <div class="backend-card" style="border-color:rgba(255,183,3,.5);background:rgba(255,183,3,.07);">
                         <div class="backend-card-label" style="color:var(--gold);">CONDITION 3</div>
                         <div class="backend-card-title">🧾 Calculate Total Bill</div>
-                        <div class="backend-card-desc">Iterates all items, prints each with price, then sums all dictionary values in one line using Python's built-in <code style="color:var(--glow);">sum()</code>.</div>
-                        <div class="backend-card-code" style="color:#FFD600;font-size:.92rem;font-weight:700;background:#0a1a10;border:1.5px solid rgba(255,214,0,.5);letter-spacing:.3px;">total = sum(cart.values())</div>
+                        <div class="backend-card-desc">Iterates all items, prints each with price, then sums all
+                            dictionary values in one line using Python's built-in <code
+                                style="color:var(--glow);">sum()</code>.</div>
+                        <div class="backend-card-code"
+                            style="color:#FFD600;font-size:.92rem;font-weight:700;background:#0a1a10;border:1.5px solid rgba(255,214,0,.5);letter-spacing:.3px;">
+                            total = sum(cart.values())</div>
                     </div>
 
                 </div>
@@ -2254,13 +2329,17 @@
                         <input class="input-field" id="d-qty" type="number" value="1" min="1" />
                     </div>
                     <div class="btn-row">
-                        <button class="action-btn add-btn" onclick="demoAdd()" onmouseenter="highlightCode('code-add')" onmouseleave="unhighlightCode()">➕ Add Product</button>
-                        <button class="action-btn rem-btn" onclick="demoRemove()" onmouseenter="highlightCode('code-remove')" onmouseleave="unhighlightCode()">🗑️ Remove</button>
+                        <button class="action-btn add-btn" onclick="demoAdd()" onmouseenter="highlightCode('code-add')"
+                            onmouseleave="unhighlightCode()">➕ Add Product</button>
+                        <button class="action-btn rem-btn" onclick="demoRemove()"
+                            onmouseenter="highlightCode('code-remove')" onmouseleave="unhighlightCode()">🗑️
+                            Remove</button>
                     </div>
                     <div class="btn-row" style="margin-top:8px;">
                         <button class="action-btn calc-btn"
                             style="flex:1;background:rgba(0,180,216,.08);border:1.5px solid rgba(0,180,216,.25);color:var(--muted);font-family:'Exo 2',sans-serif;font-weight:700;font-size:.9rem;padding:12px;border-radius:8px;cursor:pointer;"
-                            onclick="demoCalc()" onmouseenter="highlightCode('code-calc')" onmouseleave="unhighlightCode()">🧾 Calculate Total</button>
+                            onclick="demoCalc()" onmouseenter="highlightCode('code-calc')"
+                            onmouseleave="unhighlightCode()">🧾 Calculate Total</button>
                         <button class="action-btn clear-btn" onclick="demoClear()">✖ Clear All</button>
                     </div>
 
@@ -2418,14 +2497,16 @@
             <!-- formal note -->
             <div
                 style="max-width:720px;margin:0 auto 40px;background:var(--card);border:1px solid rgba(0,180,216,.15);border-radius:16px;padding:36px 42px;box-shadow:0 0 40px rgba(0,0,0,.4);">
-                <p style="font-size:1rem;color:var(--muted);line-height:1.9;font-family:'Exo 2',sans-serif;margin-bottom:18px;">
+                <p
+                    style="font-size:1rem;color:var(--muted);line-height:1.9;font-family:'Exo 2',sans-serif;margin-bottom:18px;">
                     We are grateful to our respected faculty for guiding us throughout this seminar.
                     This project — <strong style="color:var(--white);">Shopping Cart System using Python
                         Dictionary</strong> —
                     has helped us understand real-world applications of data structures
                     in a practical and meaningful way.
                 </p>
-                <p style="font-size:1rem;color:var(--muted);line-height:1.9;font-family:'Exo 2',sans-serif;margin-bottom:18px;">
+                <p
+                    style="font-size:1rem;color:var(--muted);line-height:1.9;font-family:'Exo 2',sans-serif;margin-bottom:18px;">
                     Through this program we learned how a Python <strong style="color:var(--glow);">dictionary</strong>
                     can be used to add products, remove products, and calculate a total bill —
                     the same logic used by platforms like Amazon, Swiggy, and Blinkit every day.
@@ -2459,7 +2540,8 @@
                 <div
                     style="background:rgba(18,130,162,.12);border:1px solid rgba(18,130,162,.35);border-radius:30px;padding:10px 22px;display:flex;align-items:center;gap:10px;">
                     <span style="font-size:1rem;">🧾</span>
-                    <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--sky);">sum(cart.values())</span>
+                    <span
+                        style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--sky);">sum(cart.values())</span>
                     <span style="font-size:.72rem;color:var(--muted);margin-left:4px;">Condition 3</span>
                 </div>
 
@@ -2467,10 +2549,12 @@
 
             <!-- course info row -->
             <div style="display:flex;flex-wrap:wrap;gap:24px;justify-content:center;">
-                <div style="font-size:.8rem;color:rgba(142,202,230,.5);font-family:'Exo 2',sans-serif;letter-spacing:.5px;">
+                <div
+                    style="font-size:.8rem;color:rgba(142,202,230,.5);font-family:'Exo 2',sans-serif;letter-spacing:.5px;">
                     BE II Semester &nbsp;|&nbsp; CSE-A Section &nbsp;|&nbsp; A.Y 2025-2026
                 </div>
-                <div style="font-size:.8rem;color:rgba(142,202,230,.5);font-family:'Exo 2',sans-serif;letter-spacing:.5px;">
+                <div
+                    style="font-size:.8rem;color:rgba(142,202,230,.5);font-family:'Exo 2',sans-serif;letter-spacing:.5px;">
                     Scientific Programming Seminar &nbsp;|&nbsp; 4-4-2026
                 </div>
             </div>
@@ -2485,11 +2569,13 @@
 
             <div class="section-tag">THE TEAM</div>
             <h2 class="section-title">Meet the <span>Developers</span></h2>
-            <p class="section-desc">Group 6 — Shopping Cart System built and presented by these 6 members of BE II Semester
+            <p class="section-desc">Group 6 — Shopping Cart System built and presented by these 6 members of BE II
+                Semester
                 CSE-A.</p>
 
             <!-- 6 developer cards -->
-            <div class="dev-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-bottom:48px;">
+            <div class="dev-grid"
+                style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-bottom:48px;">
 
                 <!-- Member 1 — Lead Developer -->
                 <div
@@ -2505,11 +2591,13 @@
                     <div
                         style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--glow);letter-spacing:2px;margin-bottom:6px;">
                         LEAD DEVELOPER</div>
-                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                    <div
+                        style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
                         SYED ANAS ALI</div>
                     <div
                         style="background:rgba(0,180,216,.1);border:1px solid rgba(0,180,216,.25);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
-                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--glow);">1604-25-733-050</span>
+                        <span
+                            style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--glow);">1604-25-733-050</span>
                     </div>
                     <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
                         Introduction &amp; Concept<br />Python Dictionary Logic
@@ -2529,11 +2617,13 @@
                     <div
                         style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:6px;">
                         DEVELOPER</div>
-                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                    <div
+                        style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
                         KULSUM KHANAM</div>
                     <div
                         style="background:rgba(255,183,3,.08);border:1px solid rgba(255,183,3,.25);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
-                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--gold);">1604-25-733-011</span>
+                        <span
+                            style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--gold);">1604-25-733-011</span>
                     </div>
                     <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
                         Real-World Applications<br />Presentation Design
@@ -2553,11 +2643,13 @@
                     <div
                         style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--sky);letter-spacing:2px;margin-bottom:6px;">
                         DEVELOPER</div>
-                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                    <div
+                        style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
                         ABIDAH TABASSUM</div>
                     <div
                         style="background:rgba(18,130,162,.1);border:1px solid rgba(18,130,162,.3);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
-                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--sky);">1604-25-733-012</span>
+                        <span
+                            style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--sky);">1604-25-733-012</span>
                     </div>
                     <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
                         Algorithm &amp; Working Principle<br />Step-by-step Logic
@@ -2576,12 +2668,14 @@
                     </div>
                     <div
                         style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--glowlt);letter-spacing:2px;margin-bottom:6px;">
-                        DEVELOPER</div>
-                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                        TEAM MEMBER </div>
+                    <div
+                        style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
                         JAFAR</div>
                     <div
                         style="background:rgba(144,224,239,.08);border:1px solid rgba(144,224,239,.22);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
-                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--glowlt);">1604-25-733-020</span>
+                        <span
+                            style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--glowlt);">1604-25-733-020</span>
                     </div>
                     <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
                         Python Implementation<br />Code Demo
@@ -2600,12 +2694,14 @@
                     </div>
                     <div
                         style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--amber);letter-spacing:2px;margin-bottom:6px;">
-                        DEVELOPER</div>
-                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                        TEAM MEMBER</div>
+                    <div
+                        style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
                         MUZAMMIL</div>
                     <div
                         style="background:rgba(251,133,0,.08);border:1px solid rgba(251,133,0,.25);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
-                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--amber);">1604-25-733-046</span>
+                        <span
+                            style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--amber);">1604-25-733-046</span>
                     </div>
                     <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
                         Output Demonstration<br />Testing &amp; Verification
@@ -2620,16 +2716,18 @@
                     </div>
                     <div
                         style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--deep),var(--blue));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 18px rgba(6,90,130,.4);font-size:1.8rem;">
-                        👩‍💻
+                        👩💻
                     </div>
                     <div
                         style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:#4A9EBF;letter-spacing:2px;margin-bottom:6px;">
-                        DEVELOPER</div>
-                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                        TEAM MEMBER</div>
+                    <div
+                        style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
                         MAAZ</div>
                     <div
                         style="background:rgba(6,90,130,.15);border:1px solid rgba(6,90,130,.35);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
-                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:#4A9EBF;">1604-25-733-052</span>
+                        <span
+                            style="font-family:'Fira Code',monospace;font-size:.8rem;color:#4A9EBF;">1604-25-733-052</span>
                     </div>
                     <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
                         Advantages &amp; Limitations<br />Conclusion &amp; Summary
@@ -2639,7 +2737,8 @@
             </div>
 
             <!-- Built by / Supported by row -->
-            <div style="background:rgba(0,180,216,.05);border:1px solid rgba(0,180,216,.15);border-radius:14px;padding:28px 32px;">
+            <div
+                style="background:rgba(0,180,216,.05);border:1px solid rgba(0,180,216,.15);border-radius:14px;padding:28px 32px;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
 
                     <!-- Built by -->
@@ -2652,21 +2751,24 @@
                                 <div
                                     style="width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 6px rgba(0,180,216,.6);flex-shrink:0;">
                                 </div>
-                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--glowlt);">1604-25-733-050</span>
+                                <span
+                                    style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--glowlt);">1604-25-733-050</span>
                                 <span style="font-size:.78rem;color:var(--muted);">— Lead Developer</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <div
                                     style="width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 6px rgba(0,180,216,.6);flex-shrink:0;">
                                 </div>
-                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--glowlt);">1604-25-733-011</span>
+                                <span
+                                    style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--glowlt);">1604-25-733-011</span>
                                 <span style="font-size:.78rem;color:var(--muted);">— Developer</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <div
                                     style="width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 6px rgba(0,180,216,.6);flex-shrink:0;">
                                 </div>
-                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--glowlt);">1604-25-733-012</span>
+                                <span
+                                    style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--glowlt);">1604-25-733-012</span>
                                 <span style="font-size:.78rem;color:var(--muted);">— Developer</span>
                             </div>
                         </div>
@@ -2682,21 +2784,24 @@
                                 <div
                                     style="width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(255,183,3,.5);flex-shrink:0;">
                                 </div>
-                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:#FFD569;">1604-25-733-020</span>
+                                <span
+                                    style="font-family:'Fira Code',monospace;font-size:.82rem;color:#FFD569;">1604-25-733-020</span>
                                 <span style="font-size:.78rem;color:var(--muted);">— JAFAR</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <div
                                     style="width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(255,183,3,.5);flex-shrink:0;">
                                 </div>
-                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:#FFD569;">1604-25-733-046</span>
+                                <span
+                                    style="font-family:'Fira Code',monospace;font-size:.82rem;color:#FFD569;">1604-25-733-046</span>
                                 <span style="font-size:.78rem;color:var(--muted);">— MUZAMMIL</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <div
                                     style="width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(255,183,3,.5);flex-shrink:0;">
                                 </div>
-                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:#FFD569;">1604-25-733-052</span>
+                                <span
+                                    style="font-family:'Fira Code',monospace;font-size:.82rem;color:#FFD569;">1604-25-733-052</span>
                                 <span style="font-size:.78rem;color:var(--muted);">— MAAZ</span>
                             </div>
                         </div>
@@ -2719,7 +2824,7 @@
         // ── MOBILE MENU ──────────────────────────────────────────────────────────────
         const menuToggle = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
-        
+
         function toggleMenu() {
             menuToggle.classList.toggle('active');
             mobileMenu.classList.toggle('active');
@@ -2804,151 +2909,151 @@
         // cart dictionary lives in JavaScript — always works, no server required
         const dCart = {};   // this IS the cart — same logic as Python dict
 
-        function logMsg(msg, type='success'){
-          const log = document.getElementById('msg-log');
-          const el  = document.createElement('div');
-          el.className = `msg-item ${type}`;
-          el.textContent = msg;
-          log.prepend(el);
-          setTimeout(()=> el.remove(), 4000);
+        function logMsg(msg, type = 'success') {
+            const log = document.getElementById('msg-log');
+            const el = document.createElement('div');
+            el.className = `msg-item ${type}`;
+            el.textContent = msg;
+            log.prepend(el);
+            setTimeout(() => el.remove(), 4000);
         }
 
-        function termLine(txt, cls='t-line'){
-          const tb = document.getElementById('terminal-body');
-          const sp = document.createElement('span');
-          sp.className = `t-line ${cls}`;
-          sp.textContent = txt;
-          tb.appendChild(sp);
-          tb.scrollTop = tb.scrollHeight;
+        function termLine(txt, cls = 't-line') {
+            const tb = document.getElementById('terminal-body');
+            const sp = document.createElement('span');
+            sp.className = `t-line ${cls}`;
+            sp.textContent = txt;
+            tb.appendChild(sp);
+            tb.scrollTop = tb.scrollHeight;
         }
 
-        function updateSummary(lastItemName = null){
-          const el      = document.getElementById('summary-items');
-          const entries = Object.entries(dCart);
-          if(!entries.length){
-            el.innerHTML = '<div style="color:rgba(142,202,230,.35);font-size:.85rem;font-style:italic;">Cart is empty — add a product above</div>';
-            document.getElementById('summary-total').textContent = '₹0.00';
-            return;
-          }
-          el.innerHTML = entries.map(([n,p])=>{
-            const isNew = n === lastItemName ? 'anim-enter' : '';
-            return `
+        function updateSummary(lastItemName = null) {
+            const el = document.getElementById('summary-items');
+            const entries = Object.entries(dCart);
+            if (!entries.length) {
+                el.innerHTML = '<div style="color:rgba(142,202,230,.35);font-size:.85rem;font-style:italic;">Cart is empty — add a product above</div>';
+                document.getElementById('summary-total').textContent = '₹0.00';
+                return;
+            }
+            el.innerHTML = entries.map(([n, p]) => {
+                const isNew = n === lastItemName ? 'anim-enter' : '';
+                return `
             <div class="summary-row ${isNew}" data-name="${n}">
               <span class="summary-name">${n}</span>
               <span class="summary-price">₹${parseFloat(p).toFixed(2)}</span>
             </div>`;
-          }).join('');
-          
-          const totalEl = document.getElementById('summary-total');
-          const total = entries.reduce((a,[,p]) => a + parseFloat(p), 0);
-          totalEl.textContent = `₹${total.toFixed(2)}`;
-          
-          // Pulse the total
-          totalEl.classList.remove('pulse-anim');
-          void totalEl.offsetWidth; // trigger reflow
-          totalEl.classList.add('pulse-anim');
+            }).join('');
+
+            const totalEl = document.getElementById('summary-total');
+            const total = entries.reduce((a, [, p]) => a + parseFloat(p), 0);
+            totalEl.textContent = `₹${total.toFixed(2)}`;
+
+            // Pulse the total
+            totalEl.classList.remove('pulse-anim');
+            void totalEl.offsetWidth; // trigger reflow
+            totalEl.classList.add('pulse-anim');
         }
 
         // CONDITION 1 — Add product and price → dCart[n] = p  (same as cart[name]=price in Python)
-        function demoAdd(){
-          const n = document.getElementById('d-name').value.trim();
-          const p = parseFloat(document.getElementById('d-price').value);
-          if(!n){ logMsg('Enter a product name','error'); return; }
-          if(isNaN(p) || p < 0){ logMsg('Enter a valid price','error'); return; }
+        function demoAdd() {
+            const n = document.getElementById('d-name').value.trim();
+            const p = parseFloat(document.getElementById('d-price').value);
+            if (!n) { logMsg('Enter a product name', 'error'); return; }
+            if (isNaN(p) || p < 0) { logMsg('Enter a valid price', 'error'); return; }
 
-          dCart[n] = p;                                      // CONDITION 1 — same as cart[name] = price
+            dCart[n] = p;                                      // CONDITION 1 — same as cart[name] = price
 
-          logMsg(`✅ '${n}' added at ₹${p.toFixed(2)}`,'success');
-          termLine(`>>> add_product("${n}", ${p})`,'t-prompt');
-          termLine(`  ✅  '${n}' added at ₹${p.toFixed(2)}`,'t-ok');
-          updateSummary(n);
-          document.getElementById('d-name').value  = '';
-          document.getElementById('d-price').value = '';
+            logMsg(`✅ '${n}' added at ₹${p.toFixed(2)}`, 'success');
+            termLine(`>>> add_product("${n}", ${p})`, 't-prompt');
+            termLine(`  ✅  '${n}' added at ₹${p.toFixed(2)}`, 't-ok');
+            updateSummary(n);
+            document.getElementById('d-name').value = '';
+            document.getElementById('d-price').value = '';
         }
 
         // CONDITION 2 — Remove product → delete dCart[n]  (same as del cart[name] in Python)
-        function demoRemove(){
-          const n = document.getElementById('d-name').value.trim();
-          if(!n){ logMsg('Enter product name to remove','error'); return; }
+        function demoRemove() {
+            const n = document.getElementById('d-name').value.trim();
+            if (!n) { logMsg('Enter product name to remove', 'error'); return; }
 
-          termLine(`>>> remove_product("${n}")`,'t-prompt');
-          if(dCart[n] !== undefined){
-            const row = document.querySelector(`.summary-row[data-name="${n}"]`);
-            if(row) {
-              row.classList.add('anim-exit');
-              setTimeout(() => {
-                delete dCart[n];
-                logMsg(`🗑️ '${n}' removed`,'warn');
-                termLine(`  🗑️  '${n}' removed from cart.`,'t-warn');
-                updateSummary();
-              }, 400); // match animation duration
+            termLine(`>>> remove_product("${n}")`, 't-prompt');
+            if (dCart[n] !== undefined) {
+                const row = document.querySelector(`.summary-row[data-name="${n}"]`);
+                if (row) {
+                    row.classList.add('anim-exit');
+                    setTimeout(() => {
+                        delete dCart[n];
+                        logMsg(`🗑️ '${n}' removed`, 'warn');
+                        termLine(`  🗑️  '${n}' removed from cart.`, 't-warn');
+                        updateSummary();
+                    }, 400); // match animation duration
+                } else {
+                    delete dCart[n];
+                    updateSummary();
+                }
             } else {
-              delete dCart[n];
-              updateSummary();
+                logMsg(`⚠️ '${n}' not found in cart`, 'error');
+                termLine(`  ⚠️  '${n}' not found.`, 't-err');
             }
-          } else {
-            logMsg(`⚠️ '${n}' not found in cart`,'error');
-            termLine(`  ⚠️  '${n}' not found.`,'t-err');
-          }
         }
 
         // CONDITION 3 — Calculate total → Object.values(dCart).reduce(sum)  (same as sum(cart.values()))
-        async function demoCalc(){
-          termLine(`>>> calculate_total()`,'t-prompt');
-          const entries = Object.entries(dCart);
-          if(!entries.length){
-            termLine('  Cart is empty.','t-err');
-            logMsg('Cart is empty','error');
-            return;
-          }
+        async function demoCalc() {
+            termLine(`>>> calculate_total()`, 't-prompt');
+            const entries = Object.entries(dCart);
+            if (!entries.length) {
+                termLine('  Cart is empty.', 't-err');
+                logMsg('Cart is empty', 'error');
+                return;
+            }
 
-          // Add scanning effect
-          const rows = document.querySelectorAll('.summary-row');
-          for(let row of rows) {
-              row.classList.add('scanning-highlight');
-              await new Promise(r => setTimeout(r, 100));
-              row.classList.remove('scanning-highlight');
-          }
+            // Add scanning effect
+            const rows = document.querySelectorAll('.summary-row');
+            for (let row of rows) {
+                row.classList.add('scanning-highlight');
+                await new Promise(r => setTimeout(r, 100));
+                row.classList.remove('scanning-highlight');
+            }
 
-          termLine('  ─────────────────────────────','t-dim');
-          termLine('  Product              Price','t-input');
-          termLine('  ─────────────────────────────','t-dim');
-          entries.forEach(([n,p]) => termLine(`  ${n.padEnd(20)} ₹${parseFloat(p).toFixed(2)}`,'t-input'));
-          termLine('  ─────────────────────────────','t-dim');
-          const total = entries.reduce((a,[,p]) => a + parseFloat(p), 0); // CONDITION 3 — same as sum(cart.values())
-          termLine(`  TOTAL BILL           ₹${total.toFixed(2)}`,'t-total');
-          termLine('  ─────────────────────────────','t-dim');
-          termLine('  THANK YOU FOR YOUR SHOPPING.','t-ok');
-          termLine('  VISIT AGAIN!','t-ok');
-          termLine('  ─────────────────────────────','t-dim');
-          logMsg(`💰 Total: ₹${total.toFixed(2)}`,'success');
-          
-          const totalEl = document.getElementById('summary-total');
-          totalEl.classList.remove('pulse-anim');
-          void totalEl.offsetWidth;
-          totalEl.classList.add('pulse-anim');
+            termLine('  ─────────────────────────────', 't-dim');
+            termLine('  Product              Price', 't-input');
+            termLine('  ─────────────────────────────', 't-dim');
+            entries.forEach(([n, p]) => termLine(`  ${n.padEnd(20)} ₹${parseFloat(p).toFixed(2)}`, 't-input'));
+            termLine('  ─────────────────────────────', 't-dim');
+            const total = entries.reduce((a, [, p]) => a + parseFloat(p), 0); // CONDITION 3 — same as sum(cart.values())
+            termLine(`  TOTAL BILL           ₹${total.toFixed(2)}`, 't-total');
+            termLine('  ─────────────────────────────', 't-dim');
+            termLine('  THANK YOU FOR YOUR SHOPPING.', 't-ok');
+            termLine('  VISIT AGAIN!', 't-ok');
+            termLine('  ─────────────────────────────', 't-dim');
+            logMsg(`💰 Total: ₹${total.toFixed(2)}`, 'success');
+
+            const totalEl = document.getElementById('summary-total');
+            totalEl.classList.remove('pulse-anim');
+            void totalEl.offsetWidth;
+            totalEl.classList.add('pulse-anim');
         }
 
-        function demoClear(){
-          const rows = document.querySelectorAll('.summary-row');
-          if(rows.length === 0) return;
-          
-          rows.forEach((row, i) => {
-              row.style.animationDelay = `${i * 0.1}s`;
-              row.classList.add('anim-exit');
-          });
-          
-          setTimeout(() => {
-            Object.keys(dCart).forEach(k => delete dCart[k]);  // same as cart.clear()
-            termLine('>>> # Cart cleared','t-dim');
-            termLine('  All items removed.','t-warn');
-            updateSummary();
-            logMsg('Cart cleared','warn');
-          }, rows.length * 100 + 400);
+        function demoClear() {
+            const rows = document.querySelectorAll('.summary-row');
+            if (rows.length === 0) return;
+
+            rows.forEach((row, i) => {
+                row.style.animationDelay = `${i * 0.1}s`;
+                row.classList.add('anim-exit');
+            });
+
+            setTimeout(() => {
+                Object.keys(dCart).forEach(k => delete dCart[k]);  // same as cart.clear()
+                termLine('>>> # Cart cleared', 't-dim');
+                termLine('  All items removed.', 't-warn');
+                updateSummary();
+                logMsg('Cart cleared', 'warn');
+            }, rows.length * 100 + 400);
         }
 
         document.addEventListener('keydown', e => {
-          if(e.key === 'Enter' && document.activeElement.id === 'd-price') demoAdd();
+            if (e.key === 'Enter' && document.activeElement.id === 'd-price') demoAdd();
         });
 
         // ── SCROLL REVEAL ─────────────────────────────────────────────────────────────
@@ -3001,7 +3106,7 @@
             });
             const nav = document.querySelector('nav');
             nav.style.background = scrollY > 50 ? 'rgba(2,11,24,.92)' : 'rgba(2,11,24,.75)';
-            
+
             // Progress Bar
             const totalH = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (window.scrollY / totalH) * 100;
