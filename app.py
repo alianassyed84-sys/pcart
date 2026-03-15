@@ -1,0 +1,118 @@
+# ============================================================
+#   Shopping Cart System — Python Flask Backend
+#   Group 6 | BE II Semester CSE-A | A.Y 2025-2026
+#   Scientific Programming Seminar | 4-4-2026
+#
+#   HOW TO RUN:
+#   Step 1:  pip install flask flask-cors
+#   Step 2:  python app.py
+#   Step 3:  Open browser → http://localhost:5000
+# ============================================================
+
+from flask import Flask, request, jsonify, send_file
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
+# THE CART DICTIONARY
+cart = {}
+
+# Serve the website
+@app.route("/")
+def home():
+    return send_file("index.html")
+
+# CONDITION 1 — Add product and price
+@app.route("/cart/add", methods=["POST"])
+def add_product():
+    data  = request.get_json()
+    name  = str(data.get("name", "")).strip()
+    price = data.get("price")
+    if not name:
+        return jsonify({"success": False, "message": "Enter product name."}), 400
+    try:
+        price = float(price)
+    except:
+        return jsonify({"success": False, "message": "Price must be a number."}), 400
+    if price < 0:
+        return jsonify({"success": False, "message": "Price cannot be negative."}), 400
+    cart[name] = price          # dictionary assignment
+    total = round(sum(cart.values()), 2)
+    print(f"  ADDED: '{name}' = Rs.{price:.2f} | Total = Rs.{total}")
+    return jsonify({
+        "success": True,
+        "message": f"'{name}' added at Rs.{price:.2f}",
+        "data": {"cart": cart.copy(), "total": total, "items": len(cart)}
+    })
+
+# CONDITION 2 — Remove product
+@app.route("/cart/remove/<string:name>", methods=["DELETE"])
+def remove_product(name):
+    name = name.strip()
+    if name not in cart:
+        return jsonify({"success": False, "message": f"'{name}' not found."}), 404
+    del cart[name]              # dictionary deletion
+    total = round(sum(cart.values()), 2)
+    print(f"  REMOVED: '{name}' | Total = Rs.{total}")
+    return jsonify({
+        "success": True,
+        "message": f"'{name}' removed from cart.",
+        "data": {"cart": cart.copy(), "total": total, "items": len(cart)}
+    })
+
+# CONDITION 3 — Calculate total bill
+@app.route("/cart/total", methods=["GET"])
+def calculate_total():
+    total = sum(cart.values())  # sum all dictionary values
+    total = round(total, 2)
+    breakdown = [{"name": k, "price": v} for k, v in cart.items()]
+    print(f"  TOTAL BILL: Rs.{total} | {len(cart)} item(s)")
+    return jsonify({
+        "success": True,
+        "message": f"Total bill: Rs.{total:.2f}",
+        "data": {
+            "cart": cart.copy(),
+            "total": total,
+            "items": len(cart),
+            "breakdown": breakdown
+        }
+    })
+
+# EXTRA — View all items
+@app.route("/cart", methods=["GET"])
+def view_cart():
+    total = round(sum(cart.values()), 2)
+    breakdown = [{"name": k, "price": v} for k, v in cart.items()]
+    return jsonify({
+        "success": True,
+        "message": f"Cart has {len(cart)} item(s). Total: Rs.{total}",
+        "data": {"cart": cart.copy(), "total": total, "items": len(cart), "breakdown": breakdown}
+    })
+
+# EXTRA — Clear cart
+@app.route("/cart/clear", methods=["DELETE"])
+def clear_cart():
+    count = len(cart)
+    cart.clear()
+    print(f"  CART CLEARED — {count} item(s) removed.")
+    return jsonify({
+        "success": True,
+        "message": f"Cart cleared. {count} item(s) removed.",
+        "data": {"cart": {}, "total": 0.0, "items": 0}
+    })
+
+if __name__ == "__main__":
+    print()
+    print("=" * 54)
+    print("   Shopping Cart System  —  Group 6")
+    print("   BE II Semester CSE-A  |  4-4-2026")
+    print("=" * 54)
+    print()
+    print("   CONDITION 1  →  POST   /cart/add")
+    print("   CONDITION 2  →  DELETE /cart/remove/<n>")
+    print("   CONDITION 3  →  GET    /cart/total")
+    print()
+    print("   Open browser:  http://localhost:5000")
+    print()
+    app.run(debug=True, host="0.0.0.0", port=5000)

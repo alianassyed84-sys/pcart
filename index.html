@@ -1,0 +1,2975 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart System — Group 6</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --void: #020B18;
+            --deep: #041C32;
+            --navy: #04293A;
+            --ocean: #064663;
+            --blue: #065A82;
+            --sky: #00CFFF;
+            --glow: #00D8FF;
+            --glowlt: #A8EEFF;
+            --ice: #CAF0F8;
+            --gold: #FFD000;
+            --amber: #FF9A00;
+            --white: #FFFFFF;
+            --muted: #C8E8F8;
+            --card: #0D2B4E;
+            --code: #081420;
+        }
+
+        /* ── PROJECTOR FRIENDLY SCROLLBAR ── */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--void);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--ocean);
+            border-radius: 6px;
+            border: 2px solid var(--void);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--sky);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--void);
+            color: var(--white);
+            font-family: 'Exo 2', sans-serif;
+            overflow-x: hidden;
+            font-weight: 500;
+        }
+
+        /* ── PARTICLE CANVAS ── */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ── GLOW ORBS (fixed bg) ── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb1 {
+            width: 600px;
+            height: 600px;
+            top: -150px;
+            right: -100px;
+            background: radial-gradient(circle, rgba(0, 180, 216, .18), transparent 70%);
+        }
+
+        .orb2 {
+            width: 500px;
+            height: 500px;
+            bottom: -100px;
+            left: -100px;
+            background: radial-gradient(circle, rgba(6, 90, 130, .22), transparent 70%);
+        }
+
+        .orb3 {
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(0, 180, 216, .08), transparent 70%);
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 18px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(2, 11, 24, .75);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 180, 216, .15);
+        }
+
+        .nav-logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--glow);
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(0, 180, 216, .6);
+            z-index: 102;
+        }
+
+        /* ── MENU TOGGLE ── */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 102;
+            padding: 5px;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background: var(--glow);
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* ── MOBILE MENU ── */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(2, 11, 24, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 101;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            transform: translateY(-100%);
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .mobile-menu.active {
+            transform: translateY(0);
+        }
+
+        .mobile-menu a {
+            color: var(--white);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--glow);
+        }
+
+        /* ── PROGRESS BAR ── */
+        .progress-wrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(0, 180, 216, 0.1);
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--sky), var(--glow));
+            width: 0%;
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        /* ── BACK TO TOP ── */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: rgba(11, 37, 69, 0.8);
+            border: 1px solid rgba(0, 180, 216, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--glow);
+            cursor: pointer;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background: var(--glow);
+            color: var(--deep);
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px var(--glow);
+        }
+
+        @media(max-width: 480px) {
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 44px;
+                height: 44px;
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            color: #C8E8F8;
+            text-decoration: none;
+            font-size: .9rem;
+            font-weight: 700;
+            letter-spacing: .5px;
+            transition: color .3s, text-shadow .3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--glow);
+            text-shadow: 0 0 12px rgba(0, 180, 216, .7);
+        }
+
+        .nav-badge {
+            background: rgba(0, 180, 216, .15);
+            border: 1px solid rgba(0, 180, 216, .4);
+            color: var(--glow);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: .8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* ── SECTIONS ── */
+        section {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── HERO ── */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 10% 80px;
+            gap: 60px;
+        }
+
+        .hero-left {
+            flex: 1;
+            max-width: 620px;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 180, 216, .1);
+            border: 1px solid rgba(0, 180, 216, .35);
+            padding: 8px 18px;
+            border-radius: 30px;
+            margin-bottom: 28px;
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--glow);
+            letter-spacing: 1.5px;
+            animation: fadeSlideUp .8s ease both;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--glow);
+            animation: pulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 8px var(--glow);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: .5;
+                transform: scale(1.5);
+            }
+        }
+
+        h1.hero-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(2.6rem, 5vw, 4.2rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 14px;
+            animation: fadeSlideUp .9s ease .1s both;
+        }
+
+        h1.hero-title span {
+            display: block;
+            background: linear-gradient(135deg, var(--glow), var(--glowlt), var(--sky));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            filter: drop-shadow(0 0 24px rgba(0, 180, 216, .5));
+        }
+
+        .hero-sub {
+            font-size: 1.08rem;
+            font-weight: 600;
+            color: #C8E8F8;
+            line-height: 1.7;
+            margin-bottom: 36px;
+            animation: fadeSlideUp 1s ease .2s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            animation: fadeSlideUp 1s ease .3s both;
+        }
+
+        .btn-primary {
+            padding: 14px 32px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--sky), var(--glow));
+            color: var(--deep);
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: .5px;
+            transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 0 24px rgba(0, 180, 216, .4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 40px rgba(0, 180, 216, .7);
+        }
+
+        .btn-outline {
+            padding: 14px 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: transparent;
+            border: 1.5px solid rgba(0, 180, 216, .5);
+            color: var(--glow);
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all .2s;
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 180, 216, .1);
+            border-color: var(--glow);
+            box-shadow: 0 0 20px rgba(0, 180, 216, .3);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 36px;
+            margin-top: 48px;
+            animation: fadeSlideUp 1s ease .4s both;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--glow);
+            text-shadow: 0 0 20px rgba(0, 180, 216, .5);
+        }
+
+        .stat-label {
+            font-size: .78rem;
+            color: var(--muted);
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* Hero right: live cart demo */
+        .hero-right {
+            flex: 1;
+            max-width: 480px;
+            animation: fadeSlideLeft 1s ease .2s both;
+        }
+
+        .cart-demo {
+            background: rgba(11, 37, 69, .8);
+            border: 1px solid rgba(0, 180, 216, .2);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(0, 180, 216, .12), 0 24px 60px rgba(0, 0, 0, .5);
+            backdrop-filter: blur(20px);
+        }
+
+        .cart-demo-header {
+            background: rgba(4, 28, 50, .9);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(0, 180, 216, .15);
+        }
+
+        .win-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .cart-demo-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+            font-size: .82rem;
+            color: rgba(100, 140, 170, .7);
+        }
+
+        .cart-demo-body {
+            padding: 20px;
+        }
+
+        .demo-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            background: rgba(4, 28, 50, .6);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 180, 216, .08);
+            transition: all .4s ease;
+        }
+
+        .demo-row.adding {
+            animation: addRow .5s ease;
+        }
+
+        .demo-row.removing {
+            animation: removeRow .4s ease forwards;
+        }
+
+        @keyframes addRow {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes removeRow {
+            to {
+                opacity: 0;
+                transform: translateX(20px);
+                height: 0;
+                padding: 0;
+                margin: 0;
+            }
+        }
+
+        .demo-emoji {
+            font-size: 1.3rem;
+            width: 28px;
+            text-align: center;
+        }
+
+        .demo-name {
+            flex: 1;
+            font-weight: 600;
+            font-size: .92rem;
+        }
+
+        .demo-price {
+            font-family: 'Fira Code', monospace;
+            color: var(--gold);
+            font-size: .9rem;
+        }
+
+        .demo-total {
+            margin-top: 12px;
+            padding: 14px;
+            background: linear-gradient(135deg, rgba(0, 180, 216, .15), rgba(0, 180, 216, .05));
+            border: 1px solid rgba(0, 180, 216, .3);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .demo-total-label {
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .demo-total-val {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--glow);
+            text-shadow: 0 0 12px rgba(0, 180, 216, .5);
+        }
+
+        .demo-input-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .demo-input {
+            flex: 1;
+            background: rgba(4, 28, 50, .8);
+            border: 1px solid rgba(0, 180, 216, .25);
+            border-radius: 6px;
+            padding: 9px 12px;
+            color: var(--white);
+            font-family: 'Fira Code', monospace;
+            font-size: .82rem;
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .demo-input:focus {
+            border-color: var(--glow);
+            box-shadow: 0 0 10px rgba(0, 180, 216, .2);
+        }
+
+        .demo-input::placeholder {
+            color: rgba(142, 202, 230, .35);
+        }
+
+        .demo-btn {
+            padding: 9px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: .82rem;
+            transition: all .2s;
+        }
+
+        .demo-btn.add {
+            background: rgba(0, 180, 216, .2);
+            color: var(--glow);
+            border: 1px solid rgba(0, 180, 216, .4);
+        }
+
+        .demo-btn.add:hover {
+            background: rgba(0, 180, 216, .35);
+            box-shadow: 0 0 14px rgba(0, 180, 216, .3);
+        }
+
+        .demo-btn.remove {
+            background: rgba(251, 133, 0, .15);
+            color: var(--amber);
+            border: 1px solid rgba(251, 133, 0, .35);
+        }
+
+        .demo-btn.remove:hover {
+            background: rgba(251, 133, 0, .28);
+        }
+
+        /* ── SHARED SECTION STYLES ── */
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 8%;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--glow);
+            font-size: .78rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .section-tag::before {
+            content: '';
+            width: 24px;
+            height: 2px;
+            background: var(--glow);
+            border-radius: 2px;
+        }
+
+        h2.section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            font-weight: 700;
+            margin-bottom: 14px;
+            line-height: 1.2;
+        }
+
+        h2.section-title span {
+            color: var(--glow);
+        }
+
+        .section-desc {
+            color: var(--muted);
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1.7;
+            max-width: 580px;
+            margin-bottom: 56px;
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 180, 216, .3), transparent);
+            margin: 0 8%;
+        }
+
+        /* ── CONCEPTS ── */
+        #concepts {
+            padding: 100px 0;
+        }
+
+        .concepts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .concept-card {
+            background: var(--card);
+            border: 1px solid rgba(0, 180, 216, .1);
+            border-radius: 14px;
+            padding: 32px 28px;
+            transition: transform .3s, border-color .3s, box-shadow .3s;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .6s ease, transform .6s ease, border-color .3s, box-shadow .3s;
+        }
+
+        .concept-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .concept-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--sky), var(--glow));
+        }
+
+        .concept-card:hover {
+            border-color: rgba(0, 180, 216, .4);
+            box-shadow: 0 0 40px rgba(0, 180, 216, .12), 0 16px 40px rgba(0, 0, 0, .3);
+            transform: translateY(-6px) !important;
+        }
+
+        .concept-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            background: rgba(0, 180, 216, .1);
+            border: 1px solid rgba(0, 180, 216, .2);
+        }
+
+        .concept-num {
+            font-family: 'Orbitron', monospace;
+            font-size: .72rem;
+            font-weight: 700;
+            color: var(--glow);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .concept-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .concept-desc {
+            color: var(--muted);
+            font-size: .92rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .concept-code {
+            background: #081e30;
+            border: 1.5px solid rgba(0, 216, 255, .4);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: .88rem;
+            font-weight: 700;
+            color: #FFD600;
+            letter-spacing: .3px;
+        }
+
+        /* ── ALGORITHM ── */
+        #algorithm {
+            padding: 100px 0;
+            background: rgba(4, 28, 50, .3);
+        }
+
+        .algo-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .algo-step {
+            background: var(--card);
+            border: 1px solid rgba(0, 180, 216, .1);
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .6s ease, transform .6s ease;
+        }
+
+        .algo-step.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .algo-step:hover {
+            border-color: rgba(0, 180, 216, .3);
+            box-shadow: 0 0 30px rgba(0, 180, 216, .1);
+        }
+
+        .step-num {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', monospace;
+            font-size: .85rem;
+            font-weight: 700;
+            background: rgba(0, 180, 216, .15);
+            border: 2px solid rgba(0, 180, 216, .4);
+            color: var(--glow);
+            margin-bottom: 16px;
+            box-shadow: 0 0 16px rgba(0, 180, 216, .25);
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--white);
+        }
+
+        .step-code {
+            font-family: 'Fira Code', monospace;
+            font-size: .88rem;
+            font-weight: 700;
+            color: #FFD600;
+            background: var(--code);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1.5px solid rgba(255, 210, 0, .35);
+        }
+
+        .step-detail {
+            color: var(--muted);
+            font-size: .84rem;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .step-arrow {
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--glow);
+            font-size: 1.1rem;
+            z-index: 2;
+            opacity: .7;
+        }
+
+        /* ── CODE SECTION ── */
+        #code {
+            padding: 100px 0;
+        }
+
+        .code-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .code-editor {
+            background: var(--code);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 180, 216, .15);
+            box-shadow: 0 0 60px rgba(0, 0, 0, .5), 0 0 30px rgba(0, 180, 216, .08);
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+
+        .code-editor.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        .editor-bar {
+            background: rgba(0, 0, 0, .4);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(0, 180, 216, .1);
+        }
+
+        .ebar-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .ebar-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .ebar-name {
+            flex: 1;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+            font-size: .78rem;
+            color: rgba(90, 120, 150, .6);
+        }
+
+        .code-body {
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        pre {
+            font-family: 'Fira Code', monospace;
+            font-size: .85rem;
+            line-height: 1.75;
+        }
+
+        .kw {
+            color: #00E5FF; /* Bright Neon Cyan */
+            font-weight: 700;
+        }
+
+        .fn {
+            color: #2ECC71; /* Bright Emerald Green */
+            font-weight: 700;
+        }
+
+        .st {
+            color: #FFD600; /* Vivid Yellow-Gold */
+        }
+
+        .cm {
+            color: #94A3B8; /* Lighter Grey-Blue for comments */
+            font-style: italic;
+        }
+
+        .pn {
+            color: #F8FAFC; /* Near White for punctuation */
+        }
+
+        .vr {
+            color: #FF5D73; /* Vibrant Salmon/Red */
+            font-weight: 600;
+        }
+
+        .num {
+            color: #D19A66;
+        }
+
+        .code-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity .7s ease .2s, transform .7s ease .2s;
+        }
+
+        .code-right.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        .cond-card {
+            background: var(--card);
+            border: 1px solid rgba(0, 180, 216, .1);
+            border-radius: 12px;
+            padding: 20px 22px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--glow);
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .cond-card:nth-child(2) {
+            border-left-color: var(--gold);
+        }
+
+        .cond-card:nth-child(3) {
+            border-left-color: var(--sky);
+        }
+
+        .cond-card:hover {
+            transform: translateX(6px);
+            box-shadow: 0 0 24px rgba(0, 180, 216, .1);
+        }
+
+        .cond-label {
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--glow);
+            margin-bottom: 6px;
+        }
+
+        .cond-card:nth-child(2) .cond-label {
+            color: var(--gold);
+        }
+
+        .cond-card:nth-child(3) .cond-label {
+            color: var(--sky);
+        }
+
+        .cond-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .cond-code {
+            font-family: 'Fira Code', monospace;
+            font-size: .85rem;
+            background: var(--code);
+            padding: 8px 14px;
+            border-radius: 6px;
+            color: var(--gold);
+        }
+
+        /* ── LIVE DEMO ── */
+        #demo {
+            padding: 100px 0;
+            background: rgba(4, 28, 50, .3);
+        }
+
+        .demo-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        .demo-controls {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+
+        .demo-controls.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        .demo-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--glow);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            font-size: .8rem;
+            font-weight: 700;
+            color: var(--muted);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(4, 28, 50, 0.95);
+            border: 2px solid rgba(0, 216, 255, .4);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--white);
+            font-family: 'Fira Code', monospace;
+            font-size: .95rem;
+            font-weight: 600;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .input-field:focus {
+            border-color: #00E5FF;
+            box-shadow: 0 0 18px rgba(0, 229, 255, .4);
+        }
+
+        .input-field::placeholder {
+            color: rgba(200, 232, 248, .5);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            font-size: .9rem;
+            transition: all .2s;
+            letter-spacing: .5px;
+        }
+
+        .action-btn.add-btn {
+            background: linear-gradient(135deg, rgba(0, 216, 255, .4), rgba(0, 180, 216, .3));
+            border: 2px solid #00E5FF;
+            color: var(--white);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, .5);
+        }
+
+        .action-btn.add-btn:hover {
+            background: #00E5FF;
+            color: #000;
+            box-shadow: 0 0 24px rgba(0, 229, 255, .5);
+        }
+
+        .action-btn.rem-btn {
+            background: rgba(255, 154, 0, .15);
+            border: 2px solid #FF9A00;
+            color: #FFB000;
+            font-weight: 800;
+        }
+
+        .action-btn.rem-btn:hover {
+            background: #FF9A00;
+            color: #000;
+            box-shadow: 0 0 24px rgba(255, 154, 0, .4);
+        }
+
+        .action-btn.clear-btn {
+            background: rgba(255, 93, 115, .15);
+            border: 2px solid #FF5D73;
+            color: #FF5D73;
+            font-weight: 800;
+        }
+
+        .action-btn.clear-btn:hover {
+            background: #FF5D73;
+            color: #000;
+            box-shadow: 0 0 24px rgba(255, 93, 115, .4);
+        }
+
+        .terminal-panel {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .7s ease .15s, transform .7s ease .15s;
+        }
+
+        .terminal-panel.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        .terminal {
+            background: var(--code);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 180, 216, .15);
+            box-shadow: 0 0 40px rgba(0, 0, 0, .4);
+        }
+
+        .terminal-bar {
+            background: rgba(0, 0, 0, .5);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(0, 180, 216, .1);
+        }
+
+        .term-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .term-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+        }
+
+        .term-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+            font-size: .78rem;
+            color: rgba(90, 120, 150, .6);
+        }
+
+        .terminal-body {
+            padding: 20px;
+            min-height: 280px;
+            font-family: 'Fira Code', monospace;
+            font-size: .84rem;
+            line-height: 1.7;
+        }
+
+        .t-line {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .t-prompt {
+            color: var(--glow);
+        }
+
+        .t-input {
+            color: var(--muted);
+        }
+
+        .t-ok {
+            color: #98C379;
+        }
+
+        .t-warn {
+            color: #E5C07B;
+        }
+
+        .t-err {
+            color: #E06C75;
+        }
+
+        .t-total {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .t-head {
+            color: var(--glow);
+            font-weight: 700;
+        }
+
+        .t-dim {
+            color: rgba(90, 120, 150, .6);
+        }
+
+        .cart-summary {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(0, 180, 216, .08);
+            border: 1px solid rgba(0, 180, 216, .2);
+            border-radius: 10px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(0, 180, 216, .08);
+            font-size: .88rem;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            padding-top: 10px;
+            margin-top: 4px;
+        }
+
+        .summary-name {
+            color: var(--muted);
+        }
+
+        .summary-price {
+            font-family: 'Fira Code', monospace;
+            color: var(--gold);
+        }
+
+        .summary-total {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.05rem;
+            color: var(--glow);
+            text-shadow: 0 0 10px rgba(0, 180, 216, .4);
+        }
+
+        .msg-log {
+            margin-top: 10px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .msg-item {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: .8rem;
+            margin-bottom: 4px;
+            animation: fadeSlideUp .3s ease;
+        }
+
+        .msg-item.success {
+            background: rgba(152, 195, 121, .12);
+            color: #98C379;
+            border: 1px solid rgba(152, 195, 121, .2);
+        }
+
+        .msg-item.error {
+            background: rgba(224, 108, 117, .1);
+            color: #E06C75;
+            border: 1px solid rgba(224, 108, 117, .2);
+        }
+
+        .msg-item.warn {
+            background: rgba(229, 192, 123, .1);
+            color: #E5C07B;
+            border: 1px solid rgba(229, 192, 123, .2);
+        }
+
+        /* ── REAL WORLD ── */
+        #realworld {
+            padding: 100px 0;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .app-card {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 28px;
+            border: 1px solid rgba(0, 180, 216, .08);
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .6s ease, transform .6s ease, border-color .3s, box-shadow .3s;
+        }
+
+        .app-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .app-card:hover {
+            border-color: rgba(0, 180, 216, .3);
+            box-shadow: 0 0 36px rgba(0, 180, 216, .1);
+        }
+
+        .app-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+
+        .app-name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .app-brands {
+            font-size: .78rem;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .app-desc {
+            color: var(--muted);
+            font-size: .88rem;
+            line-height: 1.6;
+        }
+
+        /* ── ADVANTAGES ── */
+        #advantages {
+            padding: 100px 0;
+            background: rgba(4, 28, 50, .3);
+        }
+
+        .adv-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .adv-col {
+            background: var(--card);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .adv-header {
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Orbitron', monospace;
+            font-size: .88rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .adv-header.plus {
+            background: rgba(0, 180, 216, .15);
+            color: var(--glow);
+        }
+
+        .adv-header.minus {
+            background: rgba(251, 133, 0, .15);
+            color: var(--amber);
+        }
+
+        .adv-list {
+            padding: 20px 24px;
+        }
+
+        .adv-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 180, 216, .06);
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity .5s ease, transform .5s ease;
+        }
+
+        .adv-item.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        .adv-item:last-child {
+            border-bottom: none;
+        }
+
+        .adv-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        .adv-dot.plus {
+            background: var(--glow);
+            box-shadow: 0 0 8px rgba(0, 180, 216, .5);
+        }
+
+        .adv-dot.minus {
+            background: var(--amber);
+            box-shadow: 0 0 8px rgba(251, 133, 0, .5);
+        }
+
+        .adv-text {
+            font-size: .92rem;
+            font-weight: 600;
+            color: #ddeeff;
+        }
+
+        /* ── BACKEND SECTION ── */
+        #backend {
+            padding: 100px 0;
+        }
+
+        .backend-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .backend-file {
+            background: var(--code);
+            border: 1px solid rgba(0, 180, 216, .2);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0, 180, 216, .08), 0 16px 40px rgba(0,0,0,.4);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .6s ease, transform .6s ease;
+        }
+
+        .backend-file.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .backend-file-bar {
+            background: rgba(4, 28, 50, .95);
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(0, 180, 216, .15);
+        }
+
+        .backend-file-name {
+            flex: 1;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+            font-size: .82rem;
+            color: rgba(100, 160, 200, .8);
+        }
+
+        .backend-file-body {
+            padding: 20px 24px;
+            font-family: 'Fira Code', monospace;
+            font-size: .82rem;
+            line-height: 1.75;
+            overflow-x: auto;
+            max-height: 520px;
+            overflow-y: auto;
+        }
+
+        .backend-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .6s ease .15s, transform .6s ease .15s;
+        }
+
+        .backend-info.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .backend-card {
+            background: var(--card);
+            border: 1px solid rgba(0, 180, 216, .12);
+            border-radius: 12px;
+            padding: 20px 22px;
+        }
+
+        .backend-card-label {
+            font-size: .72rem;
+            font-weight: 700;
+            color: var(--glow);
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .backend-card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .backend-card-desc {
+            font-size: .85rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .backend-card-code {
+            margin-top: 10px;
+            background: var(--code);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: .8rem;
+            color: var(--gold);
+            border: 1px solid rgba(0,180,216,.1);
+        }
+
+        @media(max-width: 768px) {
+            .backend-layout { grid-template-columns: 1fr; }
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            padding: 60px 8% 40px;
+            border-top: 1px solid rgba(0, 180, 216, .1);
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--glow);
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 20px rgba(0, 180, 216, .5);
+        }
+
+        .footer-sub {
+            color: var(--muted);
+            font-size: .88rem;
+            margin-bottom: 6px;
+        }
+
+        .footer-credit {
+            color: rgba(142, 202, 230, .4);
+            font-size: .78rem;
+            letter-spacing: .5px;
+        }
+
+        /* ── INTERACTIVE ENHANCEMENTS ── */
+        .code-highlight {
+            background: rgba(0, 180, 216, 0.25) !important;
+            box-shadow: inset 4px 0 0 var(--glow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(1.02);
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-arrow.pulsing {
+            animation: arrowPulse 2s infinite;
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% { opacity: 0.3; transform: translateY(-50%) translateX(0); }
+            50% { opacity: 1; transform: translateY(-50%) translateX(5px); color: var(--glowlt); }
+        }
+
+        .confetti-p {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            border-radius: 50%;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) rotate(var(--tr)); opacity: 0; }
+        }
+
+        /* Responsive refinements */
+        .quantity-badge {
+            font-size: 0.7rem;
+            background: rgba(0, 180, 216, 0.2);
+            color: var(--glowlt);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 8px;
+            border: 1px solid rgba(0, 180, 216, 0.3);
+        }
+
+        @media(max-width:900px) {
+            #hero {
+                flex-direction: column;
+                padding: 120px 6% 60px;
+                text-align: center;
+                gap: 40px;
+            }
+
+            .hero-left {
+                max-width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-cta {
+                justify-content: center;
+            }
+
+            .hero-stats {
+                justify-content: center;
+                gap: 20px;
+            }
+
+            .hero-right {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .concepts-grid,
+            .algo-steps,
+            .code-layout,
+            .demo-layout,
+            .apps-grid,
+            .adv-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .step-arrow {
+                display: none;
+            }
+
+            nav {
+                padding: 14px 24px;
+            }
+
+            .nav-links, .nav-badge {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .section-inner {
+                padding: 0 6%;
+            }
+
+            .section-desc {
+                margin-bottom: 40px;
+            }
+        }
+
+        @media(max-width: 480px) {
+            h1.hero-title {
+                font-size: 2.2rem;
+            }
+
+            .hero-tag {
+                font-size: 0.7rem;
+                padding: 6px 12px;
+            }
+
+            .stat-num {
+                font-size: 1.4rem;
+            }
+
+            .btn-primary, .btn-outline {
+                width: 100%;
+                padding: 12px 24px;
+            }
+
+            .demo-input-row {
+                flex-wrap: wrap;
+            }
+
+            .demo-input {
+                width: 100% !important;
+            }
+
+            .demo-btn {
+                flex: 1;
+            }
+
+            .apps-grid {
+                gap: 16px;
+            }
+
+            .app-card {
+                padding: 20px;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .app-icon {
+                margin-bottom: 10px;
+            }
+
+            .terminal-body {
+                font-size: 0.75rem;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="progress-wrap">
+        <div class="progress-bar" id="scroll-progress"></div>
+    </div>
+
+    <div class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+    </div>
+
+    <canvas id="particles"></canvas>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-logo">CART·SYS</div>
+        <div class="nav-links">
+            <a href="#concepts">Concept</a>
+            <a href="#algorithm">Algorithm</a>
+            <a href="#code">Code</a>
+            <a href="#backend">Backend</a>
+            <a href="#demo">Live Demo</a>
+            <a href="#realworld">Real World</a>
+            <a href="#advantages">Advantages</a>
+            <a href="#thankyou">Thank You</a>
+            <a href="#developers">Developers</a>
+        </div>
+        <div class="nav-badge">GROUP 6</div>
+        <div class="menu-toggle" id="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#concepts" onclick="toggleMenu()">Concept</a>
+        <a href="#algorithm" onclick="toggleMenu()">Algorithm</a>
+        <a href="#code" onclick="toggleMenu()">Code</a>
+        <a href="#backend" onclick="toggleMenu()">Backend</a>
+        <a href="#demo" onclick="toggleMenu()">Live Demo</a>
+        <a href="#realworld" onclick="toggleMenu()">Real World</a>
+        <a href="#advantages" onclick="toggleMenu()">Advantages</a>
+        <a href="#thankyou" onclick="toggleMenu()">Thank You</a>
+        <a href="#developers" onclick="toggleMenu()">Developers</a>
+    </div>
+
+    <!-- HERO -->
+    <section id="hero">
+        <div class="hero-left">
+            <div class="hero-tag"><span class="pulse-dot"></span> BE II SEMESTER · CSE-A · 4-4-2026</div>
+            <h1 class="hero-title">Shopping Cart<span>System</span></h1>
+            <p class="hero-sub">A Python program that simulates real-world shopping using <strong>dictionary</strong>
+                data structures — add products, remove items, and calculate your total bill instantly.</p>
+            <div class="hero-cta">
+                <button class="btn-primary"
+                    onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">▶ Try Live
+                    Demo</button>
+                <button class="btn-outline"
+                    onclick="document.getElementById('code').scrollIntoView({behavior:'smooth'})">{ } View Code</button>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-num">3</div>
+                    <div class="stat-label">CONDITIONS</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">O(1)</div>
+                    <div class="stat-label">LOOKUP TIME</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">∞</div>
+                    <div class="stat-label">PRODUCTS</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mini Cart Demo (hero) -->
+        <div class="hero-right">
+            <div class="cart-demo">
+                <div class="cart-demo-header">
+                    <div class="win-dot" style="background:#E06C75"></div>
+                    <div class="win-dot" style="background:#E5C07B"></div>
+                    <div class="win-dot" style="background:#98C379"></div>
+                    <div class="cart-demo-title">shopping_cart.py — running</div>
+                </div>
+                <div class="cart-demo-body">
+                    <div id="hero-items"></div>
+                    <div class="demo-total">
+                        <span class="demo-total-label">TOTAL BILL</span>
+                        <span class="demo-total-val" id="hero-total">₹0.00</span>
+                    </div>
+                    <div class="demo-input-row">
+                        <input class="demo-input" id="h-name" placeholder="product name" />
+                        <input class="demo-input" id="h-price" placeholder="₹ price" style="width:90px;flex:none;" />
+                        <button class="demo-btn add" onclick="heroAdd()">+ ADD</button>
+                        <button class="demo-btn remove" onclick="heroRemove()">🗑</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CONCEPTS -->
+    <section id="concepts">
+        <div class="section-inner">
+            <div class="section-tag">CORE CONCEPT</div>
+            <h2 class="section-title">Three <span>Conditions</span></h2>
+            <p class="section-desc">Your assignment requires exactly three operations on the dictionary — each maps to a
+                core Python dictionary method.</p>
+            <div class="concepts-grid">
+                <div class="concept-card">
+                    <div class="concept-icon">➕</div>
+                    <div class="concept-num">CONDITION 01</div>
+                    <div class="concept-title">Add Product & Price</div>
+                    <div class="concept-desc">Store any product as a <em>key</em> and its price as the <em>value</em> in
+                        the cart dictionary. Instantly accessible.</div>
+                    <div class="concept-code">cart[name] = price</div>
+                </div>
+                <div class="concept-card" style="transition-delay:.1s">
+                    <div class="concept-icon" style="background:rgba(255,183,3,.1);border-color:rgba(255,183,3,.2);">🗑️
+                    </div>
+                    <div class="concept-num" style="color:var(--gold);">CONDITION 02</div>
+                    <div class="concept-title">Remove Product</div>
+                    <div class="concept-desc">Delete any key-value pair from the dictionary using the product name.
+                        Validates existence before deletion.</div>
+                    <div class="concept-code" style="color:var(--amber);">del cart[name]</div>
+                </div>
+                <div class="concept-card" style="transition-delay:.2s">
+                    <div class="concept-icon" style="background:rgba(18,130,162,.1);border-color:rgba(18,130,162,.25);">
+                        🧾</div>
+                    <div class="concept-num" style="color:var(--sky);">CONDITION 03</div>
+                    <div class="concept-title">Calculate Total Bill</div>
+                    <div class="concept-desc">Sum all price values in the dictionary in a single line using Python's
+                        built-in <code>sum()</code> function.</div>
+                    <div class="concept-code" style="color:var(--sky);">sum(cart.values())</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ALGORITHM -->
+    <section id="algorithm">
+        <div class="section-inner">
+            <div class="section-tag">ALGORITHM</div>
+            <h2 class="section-title">Working <span>Principle</span></h2>
+            <p class="section-desc">Six clean steps — from initializing the dictionary to exiting the program.</p>
+            <div class="algo-steps">
+                <div class="algo-step"><span class="step-arrow pulsing">→</span>
+                    <div class="step-num">01</div>
+                    <div class="step-title">START</div>
+                    <div class="step-code">cart = {}</div>
+                    <div class="step-detail">Initialize empty dictionary</div>
+                </div>
+                <div class="algo-step" style="transition-delay:.08s"><span class="step-arrow pulsing" style="animation-delay:0.2s">→</span>
+                    <div class="step-num" style="border-color:rgba(0,180,216,.4)">02</div>
+                    <div class="step-title">ADD</div>
+                    <div class="step-code">cart[name] = price</div>
+                    <div class="step-detail">Key = name, Value = price</div>
+                </div>
+                <div class="algo-step" style="transition-delay:.16s"><span class="step-arrow pulsing" style="animation-delay:0.4s">→</span>
+                    <div class="step-num"
+                        style="border-color:rgba(255,183,3,.4);color:var(--gold);background:rgba(255,183,3,.1)">03</div>
+                    <div class="step-title">REMOVE</div>
+                    <div class="step-code">del cart[name]</div>
+                    <div class="step-detail">Delete key-value pair</div>
+                </div>
+                <div class="algo-step" style="transition-delay:.24s"><span class="step-arrow pulsing" style="animation-delay:0.6s">→</span>
+                    <div class="step-num">04</div>
+                    <div class="step-title">VIEW</div>
+                    <div class="step-code">cart.items()</div>
+                    <div class="step-detail">Iterate all products</div>
+                </div>
+                <div class="algo-step" style="transition-delay:.32s"><span class="step-arrow pulsing" style="animation-delay:0.8s">→</span>
+                    <div class="step-num">05</div>
+                    <div class="step-title">TOTAL</div>
+                    <div class="step-code">sum(cart.values())</div>
+                    <div class="step-detail">Sum all price values</div>
+                </div>
+                <div class="algo-step" style="transition-delay:.4s">
+                    <div class="step-num"
+                        style="border-color:rgba(142,202,230,.3);color:var(--muted);background:rgba(142,202,230,.08)">06
+                    </div>
+                    <div class="step-title">EXIT</div>
+                    <div class="step-code">break</div>
+                    <div class="step-detail">Terminate menu loop</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CODE -->
+    <section id="code">
+        <div class="section-inner">
+            <div class="section-tag">PYTHON CODE</div>
+            <h2 class="section-title">Full <span>Implementation</span></h2>
+            <p class="section-desc">Complete Python program satisfying all three assignment conditions.</p>
+            <div class="code-layout">
+                <div class="code-editor">
+                    <div class="editor-bar">
+                        <div class="ebar-dots">
+                            <div class="ebar-dot" style="background:#E06C75"></div>
+                            <div class="ebar-dot" style="background:#E5C07B"></div>
+                            <div class="ebar-dot" style="background:#98C379"></div>
+                        </div>
+                        <div class="ebar-name">shopping_cart.py</div>
+                    </div>
+                    <div class="code-body">
+                        <pre>
+<span class="cm"># Group 6 – Shopping Cart System</span>
+<span class="cm"># BE II Sem CSE-A | A.Y 2025-2026</span>
+
+<span class="vr">cart</span> <span class="pn">=</span> {}  <span class="cm"># empty dictionary</span>
+
+<span class="cm"># ── CONDITION 1: Add product and price ──</span>
+<span id="code-add"><span class="kw">def</span> <span class="fn">add_product</span>(<span class="pn">name</span>, <span class="pn">price</span>):</span>
+<span id="code-add-logic">    <span class="vr">cart</span>[<span class="pn">name</span>] <span class="pn">=</span> <span class="pn">price</span></span>
+    <span class="fn">print</span>(<span class="st">f"✅ '{name}' added at ₹{price:.2f}"</span>)
+
+<span class="cm"># ── CONDITION 2: Remove product ──</span>
+<span id="code-remove"><span class="kw">def</span> <span class="fn">remove_product</span>(<span class="pn">name</span>):</span>
+<span id="code-remove-logic">    <span class="kw">if</span> <span class="pn">name</span> <span class="kw">in</span> <span class="vr">cart</span>:
+        <span class="kw">del</span> <span class="vr">cart</span>[<span class="pn">name</span>]</span>
+        <span class="fn">print</span>(<span class="st">f"🗑️ '{name}' removed."</span>)
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="st">f"⚠️ '{name}' not found."</span>)
+
+<span class="cm"># ── CONDITION 3: Calculate total bill ──</span>
+<span id="code-calc"><span class="kw">def</span> <span class="fn">calculate_total</span>():</span>
+<span id="code-calc-logic">    <span class="kw">if not</span> <span class="vr">cart</span>:
+        <span class="fn">print</span>(<span class="st">"Cart is empty!"</span>); <span class="kw">return</span>
+    <span class="kw">for</span> <span class="pn">p</span>, <span class="pn">v</span> <span class="kw">in</span> <span class="vr">cart</span>.<span class="fn">items</span>():
+        <span class="fn">print</span>(<span class="st">f"  {p:&lt;20} ₹{v:.2f}"</span>)
+    <span class="pn">total</span> <span class="pn">=</span> <span class="fn">sum</span>(<span class="vr">cart</span>.<span class="fn">values</span>())</span>
+    <span class="fn">print</span>(<span class="st">f"TOTAL BILL: ₹{total:.2f}"</span>)
+</pre>
+                    </div>
+                </div>
+
+                <div class="code-right">
+                    <div style="margin-bottom:20px;color:var(--muted);font-size:.9rem;line-height:1.6;">
+                        Each function maps directly to one assignment condition. The entire cart state lives in a single
+                        Python dictionary.
+                    </div>
+                    <div class="cond-card">
+                        <div class="cond-label">CONDITION 1</div>
+                        <div class="cond-title">➕ Add Product & Price</div>
+                        <div class="cond-code">cart[name] = price</div>
+                    </div>
+                    <div class="cond-card">
+                        <div class="cond-label">CONDITION 2</div>
+                        <div class="cond-title">🗑️ Remove Product</div>
+                        <div class="cond-code">del cart[name]</div>
+                    </div>
+                    <div class="cond-card">
+                        <div class="cond-label">CONDITION 3</div>
+                        <div class="cond-title">🧾 Calculate Total Bill</div>
+                        <div class="cond-code">sum(cart.values())</div>
+                    </div>
+                    <div
+                        style="margin-top:20px;padding:16px;background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.15);border-radius:10px;">
+                        <div
+                            style="font-size:.8rem;color:var(--muted);margin-bottom:8px;font-weight:700;letter-spacing:1px;">
+                            DICTIONARY KEY INSIGHT</div>
+                        <div style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--glowlt);">
+                            cart["Rice"] → 60.0<br>
+                            cart["Milk"] → 30.0<br>
+                            <span style="color:var(--gold)">sum(cart.values()) → 90.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- BACKEND -->
+    <section id="backend">
+        <div class="section-inner">
+            <div class="section-tag">BACKEND CODE</div>
+            <h2 class="section-title">Python <span>Backend</span></h2>
+            <p class="section-desc">The complete <code style="font-family:'Fira Code',monospace;color:var(--glow);background:rgba(0,180,216,.1);padding:2px 8px;border-radius:4px;">shopping_cart.py</code> — a simple dictionary-based program that handles all three conditions using a while loop menu.</p>
+            <div class="backend-layout">
+                <div class="backend-file">
+                    <div class="backend-file-bar">
+                        <div class="win-dot" style="background:#E06C75"></div>
+                        <div class="win-dot" style="background:#E5C07B"></div>
+                        <div class="win-dot" style="background:#98C379"></div>
+                        <div class="backend-file-name">shopping_cart.py</div>
+                    </div>
+                    <div class="backend-file-body">
+<pre>
+<span class="cm"># ============================================================</span>
+<span class="cm">#   Shopping Cart System</span>
+<span class="cm">#   Group 6 | BE II Semester CSE-A</span>
+<span class="cm">#   Scientific Programming Seminar | 4-4-2026</span>
+<span class="cm"># ============================================================</span>
+
+<span class="vr">cart</span> <span class="pn">=</span> {}  <span class="cm"># dictionary to store product: price</span>
+
+<span class="cm"># ── CONDITION 1: Add product and price ──────────</span>
+<span class="kw">def</span> <span class="fn">add_product</span>(<span class="pn">name</span>, <span class="pn">price</span>):
+    <span class="vr">cart</span>[<span class="pn">name</span>] <span class="pn">=</span> <span class="pn">price</span>        <span class="cm"># key = name, value = price</span>
+    <span class="fn">print</span>(<span class="st">f"✅ '{name}' added at ₹{price:.2f}"</span>)
+
+<span class="cm"># ── CONDITION 2: Remove product ─────────────────</span>
+<span class="kw">def</span> <span class="fn">remove_product</span>(<span class="pn">name</span>):
+    <span class="kw">if</span> <span class="pn">name</span> <span class="kw">in</span> <span class="vr">cart</span>:
+        <span class="kw">del</span> <span class="vr">cart</span>[<span class="pn">name</span>]     <span class="cm"># delete key-value pair</span>
+        <span class="fn">print</span>(<span class="st">f"🗑️ '{name}' removed."</span>)
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="st">f"⚠️ '{name}' not found."</span>)
+
+<span class="cm"># ── CONDITION 3: Calculate total bill ───────────</span>
+<span class="kw">def</span> <span class="fn">calculate_total</span>():
+    <span class="kw">if not</span> <span class="vr">cart</span>:
+        <span class="fn">print</span>(<span class="st">"Cart is empty!"</span>); <span class="kw">return</span>
+    <span class="fn">print</span>(<span class="st">"\n  Product              Price"</span>)
+    <span class="fn">print</span>(<span class="st">"  " + "-"*30</span>)
+    <span class="kw">for</span> <span class="pn">p</span>, <span class="pn">v</span> <span class="kw">in</span> <span class="vr">cart</span>.<span class="fn">items</span>():
+        <span class="fn">print</span>(<span class="st">f"  {p:&lt;20} ₹{v:.2f}"</span>)
+    <span class="pn">total</span> <span class="pn">=</span> <span class="fn">sum</span>(<span class="vr">cart</span>.<span class="fn">values</span>())   <span class="cm"># sum all values</span>
+    <span class="fn">print</span>(<span class="st">f"\n  TOTAL BILL: ₹{total:.2f}"</span>)
+
+<span class="cm"># ── MAIN PROGRAM LOOP ───────────────────────────</span>
+<span class="fn">print</span>(<span class="st">"=" * 40</span>)
+<span class="fn">print</span>(<span class="st">"   🛒 SHOPPING CART SYSTEM"</span>)
+<span class="fn">print</span>(<span class="st">"=" * 40</span>)
+
+<span class="kw">while</span> <span class="kw">True</span>:
+    <span class="fn">print</span>(<span class="st">"\n1. Add product and price"</span>)
+    <span class="fn">print</span>(<span class="st">"2. Remove product"</span>)
+    <span class="fn">print</span>(<span class="st">"3. Calculate total bill"</span>)
+    <span class="fn">print</span>(<span class="st">"4. Exit"</span>)
+    <span class="pn">choice</span> <span class="pn">=</span> <span class="fn">input</span>(<span class="st">"\nEnter choice (1-4): "</span>)
+
+    <span class="kw">if</span> <span class="pn">choice</span> <span class="pn">==</span> <span class="st">'1'</span>:
+        <span class="pn">name</span>  <span class="pn">=</span> <span class="fn">input</span>(<span class="st">"Enter product name: "</span>)
+        <span class="pn">price</span> <span class="pn">=</span> <span class="fn">float</span>(<span class="fn">input</span>(<span class="st">"Enter price: "</span>))
+        <span class="fn">add_product</span>(<span class="pn">name</span>, <span class="pn">price</span>)
+
+    <span class="kw">elif</span> <span class="pn">choice</span> <span class="pn">==</span> <span class="st">'2'</span>:
+        <span class="pn">name</span> <span class="pn">=</span> <span class="fn">input</span>(<span class="st">"Enter product name: "</span>)
+        <span class="fn">remove_product</span>(<span class="pn">name</span>)
+
+    <span class="kw">elif</span> <span class="pn">choice</span> <span class="pn">==</span> <span class="st">'3'</span>:
+        <span class="fn">calculate_total</span>()
+
+    <span class="kw">elif</span> <span class="pn">choice</span> <span class="pn">==</span> <span class="st">'4'</span>:
+        <span class="fn">print</span>(<span class="st">"Thank you! Goodbye."</span>)
+        <span class="kw">break</span>              <span class="cm"># exit the while loop</span>
+
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="st">"Invalid choice!"</span>)
+</pre>
+                    </div>
+                </div>
+
+                <div class="backend-info">
+                    <div class="backend-card">
+                        <div class="backend-card-label">CONDITION 1</div>
+                        <div class="backend-card-title">➕ Add Product &amp; Price</div>
+                        <div class="backend-card-desc">Stores any product name as a <em>key</em> and its price as the <em>value</em> in the cart dictionary. Instant O(1) insertion.</div>
+                        <div class="backend-card-code">cart[name] = price</div>
+                    </div>
+                    <div class="backend-card">
+                        <div class="backend-card-label" style="color:var(--gold);">CONDITION 2</div>
+                        <div class="backend-card-title">🗑️ Remove Product</div>
+                        <div class="backend-card-desc">Checks if the product exists in the dictionary, then deletes the key-value pair. Prints a warning if not found.</div>
+                        <div class="backend-card-code" style="color:var(--amber);">del cart[name]</div>
+                    </div>
+                    <div class="backend-card" style="border-color:rgba(255,183,3,.5);background:rgba(255,183,3,.07);">
+                        <div class="backend-card-label" style="color:var(--gold);">CONDITION 3</div>
+                        <div class="backend-card-title">🧾 Calculate Total Bill</div>
+                        <div class="backend-card-desc">Iterates all items, prints each with price, then sums all dictionary values in one line using Python's built-in <code style="color:var(--glow);">sum()</code>.</div>
+                        <div class="backend-card-code" style="color:#FFD600;font-size:.92rem;font-weight:700;background:#0a1a10;border:1.5px solid rgba(255,214,0,.5);letter-spacing:.3px;">total = sum(cart.values())</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- LIVE DEMO -->
+    <section id="demo">
+        <div class="section-inner">
+            <div class="section-tag">INTERACTIVE</div>
+            <h2 class="section-title">Live <span>Demo</span></h2>
+            <p class="section-desc">Try it yourself — add products, remove them, and see the total calculate in real
+                time.</p>
+            <div class="demo-layout">
+                <div class="demo-controls">
+                    <div class="demo-title">🛒 SHOPPING CART</div>
+                    <div class="input-group">
+                        <label class="input-label">PRODUCT NAME</label>
+                        <input class="input-field" id="d-name" placeholder="e.g. Rice, Bread, Milk..." />
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">PRICE (₹)</label>
+                        <input class="input-field" id="d-price" type="number" placeholder="e.g. 60" />
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">QUANTITY</label>
+                        <input class="input-field" id="d-qty" type="number" value="1" min="1" />
+                    </div>
+                    <div class="btn-row">
+                        <button class="action-btn add-btn" onclick="demoAdd()" onmouseenter="highlightCode('code-add')" onmouseleave="unhighlightCode()">➕ Add Product</button>
+                        <button class="action-btn rem-btn" onclick="demoRemove()" onmouseenter="highlightCode('code-remove')" onmouseleave="unhighlightCode()">🗑️ Remove</button>
+                    </div>
+                    <div class="btn-row" style="margin-top:8px;">
+                        <button class="action-btn calc-btn"
+                            style="flex:1;background:rgba(0,180,216,.08);border:1.5px solid rgba(0,180,216,.25);color:var(--muted);font-family:'Exo 2',sans-serif;font-weight:700;font-size:.9rem;padding:12px;border-radius:8px;cursor:pointer;"
+                            onclick="demoCalc()" onmouseenter="highlightCode('code-calc')" onmouseleave="unhighlightCode()">🧾 Calculate Total</button>
+                        <button class="action-btn clear-btn" onclick="demoClear()">✖ Clear All</button>
+                    </div>
+
+                    <!-- Cart Summary -->
+                    <div class="cart-summary" id="cart-summary">
+                        <div
+                            style="font-size:.75rem;font-weight:700;color:var(--glow);letter-spacing:1.5px;margin-bottom:10px;">
+                            CART CONTENTS</div>
+                        <div id="summary-items">
+                            <div style="color:rgba(142,202,230,.35);font-size:.85rem;font-style:italic;">Cart is empty —
+                                add a product above</div>
+                        </div>
+                        <div class="summary-row"
+                            style="margin-top:10px;border-top:1px solid rgba(0,180,216,.15);padding-top:10px;">
+                            <span style="font-weight:700;color:var(--white);">TOTAL BILL</span>
+                            <span class="summary-total" id="summary-total">₹0.00</span>
+                        </div>
+                    </div>
+                    <div class="msg-log" id="msg-log"></div>
+                </div>
+
+                <div class="terminal-panel">
+                    <div class="terminal">
+                        <div class="terminal-bar">
+                            <div class="term-dots">
+                                <div class="term-dot" style="background:#E06C75"></div>
+                                <div class="term-dot" style="background:#E5C07B"></div>
+                                <div class="term-dot" style="background:#98C379"></div>
+                            </div>
+                            <div class="term-title">Python Terminal — shopping_cart.py</div>
+                        </div>
+                        <div class="terminal-body" id="terminal-body">
+                            <span class="t-line t-dim">==========================================</span>
+                            <span class="t-line t-head"> 🛒 SHOPPING CART SYSTEM 🛒</span>
+                            <span class="t-line t-dim">==========================================</span>
+                            <span class="t-line"> </span>
+                            <span class="t-line t-input"> 1. Add product and price</span>
+                            <span class="t-line t-input"> 2. Remove product</span>
+                            <span class="t-line t-input"> 3. Calculate total bill</span>
+                            <span class="t-line"> </span>
+                            <span class="t-line t-dim">Waiting for input...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- REAL WORLD -->
+    <section id="realworld">
+        <div class="section-inner">
+            <div class="section-tag">APPLICATIONS</div>
+            <h2 class="section-title">Real-World <span>Usage</span></h2>
+            <p class="section-desc">This same dictionary-based cart logic powers billion-dollar platforms worldwide.</p>
+            <div class="apps-grid">
+                <div class="app-card">
+                    <div class="app-icon" style="background:rgba(0,180,216,.1);border:1px solid rgba(0,180,216,.2);">🌐
+                    </div>
+                    <div>
+                        <div class="app-name">E-Commerce Platforms</div>
+                        <div class="app-brands" style="color:var(--glow);">Amazon · Flipkart · Meesho</div>
+                        <div class="app-desc">Cart stores selected items as key-value pairs while users browse.
+                            Quantities, prices, and discounts are applied before checkout.</div>
+                    </div>
+                </div>
+                <div class="app-card" style="transition-delay:.1s">
+                    <div class="app-icon" style="background:rgba(255,183,3,.1);border:1px solid rgba(255,183,3,.2);">🍕
+                    </div>
+                    <div>
+                        <div class="app-name">Food Delivery Apps</div>
+                        <div class="app-brands" style="color:var(--gold);">Swiggy · Zomato · Dunzo</div>
+                        <div class="app-desc">Selected dishes are stored in a cart dictionary. The total is recalculated
+                            live as users add or remove items from their order.</div>
+                    </div>
+                </div>
+                <div class="app-card" style="transition-delay:.15s">
+                    <div class="app-icon" style="background:rgba(18,130,162,.1);border:1px solid rgba(18,130,162,.2);">
+                        🏪</div>
+                    <div>
+                        <div class="app-name">Retail POS Systems</div>
+                        <div class="app-brands" style="color:var(--sky);">DMart · Big Bazaar · Reliance</div>
+                        <div class="app-desc">Supermarket billing uses dict-like structures to scan and add items. The
+                            total is printed on the receipt at the end.</div>
+                    </div>
+                </div>
+                <div class="app-card" style="transition-delay:.2s">
+                    <div class="app-icon" style="background:rgba(251,133,0,.1);border:1px solid rgba(251,133,0,.2);">📱
+                    </div>
+                    <div>
+                        <div class="app-name">Quick Commerce Apps</div>
+                        <div class="app-brands" style="color:var(--amber);">Blinkit · Zepto · Instamart</div>
+                        <div class="app-desc">10-minute delivery apps manage fast carts — products added, removed, and
+                            totalled in seconds using highly optimized dict operations.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ADVANTAGES -->
+    <section id="advantages">
+        <div class="section-inner">
+            <div class="section-tag">ANALYSIS</div>
+            <h2 class="section-title">Advantages & <span>Limitations</span></h2>
+            <p class="section-desc">Dictionary-based carts excel in simplicity and speed — with clear areas for
+                extension.</p>
+            <div class="adv-layout">
+                <div class="adv-col">
+                    <div class="adv-header plus">✅ &nbsp; ADVANTAGES</div>
+                    <div class="adv-list" id="adv-plus"></div>
+                </div>
+                <div class="adv-col">
+                    <div class="adv-header minus">⚠️ &nbsp; LIMITATIONS</div>
+                    <div class="adv-list" id="adv-minus"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section id="thankyou" style="padding:90px 0;position:relative;z-index:1;text-align:center;">
+        <div class="section-inner">
+
+            <!-- glowing ring decoration -->
+            <div style="position:relative;display:inline-block;margin-bottom:32px;">
+                <div
+                    style="width:110px;height:110px;border-radius:50%;border:2px solid rgba(0,180,216,.35);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 0 40px rgba(0,180,216,.2);">
+                    <div
+                        style="width:82px;height:82px;border-radius:50%;border:1.5px solid rgba(0,180,216,.55);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(0,180,216,.3);">
+                        <span style="font-size:2.2rem;">🛒</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thank You heading -->
+            <h2
+                style="font-family:'Orbitron',monospace;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--white);margin-bottom:10px;letter-spacing:2px;">
+                Thank You
+            </h2>
+            <p
+                style="font-family:'Calibri',sans-serif;font-size:1.15rem;color:var(--glow);font-style:italic;margin-bottom:36px;letter-spacing:1px;">
+                for your kind attention and valuable time
+            </p>
+
+            <!-- divider line -->
+            <div
+                style="width:200px;height:2px;background:linear-gradient(90deg,transparent,var(--glow),transparent);margin:0 auto 36px;">
+            </div>
+
+            <!-- formal note -->
+            <div
+                style="max-width:720px;margin:0 auto 40px;background:var(--card);border:1px solid rgba(0,180,216,.15);border-radius:16px;padding:36px 42px;box-shadow:0 0 40px rgba(0,0,0,.4);">
+                <p style="font-size:1rem;color:var(--muted);line-height:1.9;font-family:'Exo 2',sans-serif;margin-bottom:18px;">
+                    We are grateful to our respected faculty for guiding us throughout this seminar.
+                    This project — <strong style="color:var(--white);">Shopping Cart System using Python
+                        Dictionary</strong> —
+                    has helped us understand real-world applications of data structures
+                    in a practical and meaningful way.
+                </p>
+                <p style="font-size:1rem;color:var(--muted);line-height:1.9;font-family:'Exo 2',sans-serif;margin-bottom:18px;">
+                    Through this program we learned how a Python <strong style="color:var(--glow);">dictionary</strong>
+                    can be used to add products, remove products, and calculate a total bill —
+                    the same logic used by platforms like Amazon, Swiggy, and Blinkit every day.
+                </p>
+                <p style="font-size:1rem;color:var(--muted);line-height:1.9;font-family:'Exo 2',sans-serif;">
+                    We sincerely thank our teacher for this opportunity and hope our work
+                    meets the expectations of the <strong style="color:var(--white);">Scientific Programming
+                        Seminar</strong>.
+                </p>
+            </div>
+
+            <!-- 3 conditions recap badges -->
+            <div style="display:inline-flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:40px;">
+
+                <div
+                    style="background:rgba(0,180,216,.1);border:1px solid rgba(0,180,216,.35);border-radius:30px;padding:10px 22px;display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:1rem;">➕</span>
+                    <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--glow);">cart[name] =
+                        price</span>
+                    <span style="font-size:.72rem;color:var(--muted);margin-left:4px;">Condition 1</span>
+                </div>
+
+                <div
+                    style="background:rgba(255,183,3,.08);border:1px solid rgba(255,183,3,.3);border-radius:30px;padding:10px 22px;display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:1rem;">🗑️</span>
+                    <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--gold);">del
+                        cart[name]</span>
+                    <span style="font-size:.72rem;color:var(--muted);margin-left:4px;">Condition 2</span>
+                </div>
+
+                <div
+                    style="background:rgba(18,130,162,.12);border:1px solid rgba(18,130,162,.35);border-radius:30px;padding:10px 22px;display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:1rem;">🧾</span>
+                    <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--sky);">sum(cart.values())</span>
+                    <span style="font-size:.72rem;color:var(--muted);margin-left:4px;">Condition 3</span>
+                </div>
+
+            </div>
+
+            <!-- course info row -->
+            <div style="display:flex;flex-wrap:wrap;gap:24px;justify-content:center;">
+                <div style="font-size:.8rem;color:rgba(142,202,230,.5);font-family:'Exo 2',sans-serif;letter-spacing:.5px;">
+                    BE II Semester &nbsp;|&nbsp; CSE-A Section &nbsp;|&nbsp; A.Y 2025-2026
+                </div>
+                <div style="font-size:.8rem;color:rgba(142,202,230,.5);font-family:'Exo 2',sans-serif;letter-spacing:.5px;">
+                    Scientific Programming Seminar &nbsp;|&nbsp; 4-4-2026
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section id="developers" style="padding:90px 0;position:relative;z-index:1;">
+        <div class="section-inner">
+
+            <div class="section-tag">THE TEAM</div>
+            <h2 class="section-title">Meet the <span>Developers</span></h2>
+            <p class="section-desc">Group 6 — Shopping Cart System built and presented by these 6 members of BE II Semester
+                CSE-A.</p>
+
+            <!-- 6 developer cards -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:48px;">
+
+                <!-- Member 1 — Lead Developer -->
+                <div
+                    style="background:var(--card);border:1px solid rgba(0,180,216,.25);border-radius:16px;padding:28px 22px;text-align:center;box-shadow:0 0 30px rgba(0,180,216,.12);position:relative;overflow:hidden;">
+                    <div
+                        style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--glow),var(--sky));">
+                    </div>
+                    <!-- avatar circle -->
+                    <div
+                        style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--ocean),var(--glow));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 20px rgba(0,180,216,.4);font-size:1.8rem;">
+                        👨‍💻
+                    </div>
+                    <div
+                        style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--glow);letter-spacing:2px;margin-bottom:6px;">
+                        LEAD DEVELOPER</div>
+                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                        SYED ANAS ALI</div>
+                    <div
+                        style="background:rgba(0,180,216,.1);border:1px solid rgba(0,180,216,.25);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
+                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--glow);">1604-25-733-050</span>
+                    </div>
+                    <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
+                        Introduction &amp; Concept<br />Python Dictionary Logic
+                    </div>
+                </div>
+
+                <!-- Member 2 -->
+                <div
+                    style="background:var(--card);border:1px solid rgba(255,183,3,.2);border-radius:16px;padding:28px 22px;text-align:center;box-shadow:0 0 22px rgba(0,0,0,.3);position:relative;overflow:hidden;">
+                    <div
+                        style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--amber));">
+                    </div>
+                    <div
+                        style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#3a2800,var(--gold));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 18px rgba(255,183,3,.3);font-size:1.8rem;">
+                        👩‍💻
+                    </div>
+                    <div
+                        style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:6px;">
+                        DEVELOPER</div>
+                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                        KULSUM KHANAM</div>
+                    <div
+                        style="background:rgba(255,183,3,.08);border:1px solid rgba(255,183,3,.25);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
+                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--gold);">1604-25-733-010</span>
+                    </div>
+                    <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
+                        Real-World Applications<br />Presentation Design
+                    </div>
+                </div>
+
+                <!-- Member 3 -->
+                <div
+                    style="background:var(--card);border:1px solid rgba(18,130,162,.25);border-radius:16px;padding:28px 22px;text-align:center;box-shadow:0 0 22px rgba(0,0,0,.3);position:relative;overflow:hidden;">
+                    <div
+                        style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--sky),var(--glow));">
+                    </div>
+                    <div
+                        style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--sky));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 18px rgba(18,130,162,.35);font-size:1.8rem;">
+                        👩‍💻
+                    </div>
+                    <div
+                        style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--sky);letter-spacing:2px;margin-bottom:6px;">
+                        DEVELOPER</div>
+                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                        ABIDAH TABASSUM</div>
+                    <div
+                        style="background:rgba(18,130,162,.1);border:1px solid rgba(18,130,162,.3);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
+                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--sky);">1604-25-733-011</span>
+                    </div>
+                    <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
+                        Algorithm &amp; Working Principle<br />Step-by-step Logic
+                    </div>
+                </div>
+
+                <!-- Member 4 -->
+                <div
+                    style="background:var(--card);border:1px solid rgba(0,180,216,.18);border-radius:16px;padding:28px 22px;text-align:center;box-shadow:0 0 22px rgba(0,0,0,.3);position:relative;overflow:hidden;">
+                    <div
+                        style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--glowlt),var(--glow));">
+                    </div>
+                    <div
+                        style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--deep),var(--glowlt));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 18px rgba(144,224,239,.2);font-size:1.8rem;">
+                        👩‍💻
+                    </div>
+                    <div
+                        style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--glowlt);letter-spacing:2px;margin-bottom:6px;">
+                        DEVELOPER</div>
+                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                        Member 4</div>
+                    <div
+                        style="background:rgba(144,224,239,.08);border:1px solid rgba(144,224,239,.22);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
+                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--glowlt);">1604-25-733-020</span>
+                    </div>
+                    <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
+                        Python Implementation<br />Code Demo
+                    </div>
+                </div>
+
+                <!-- Member 5 -->
+                <div
+                    style="background:var(--card);border:1px solid rgba(251,133,0,.2);border-radius:16px;padding:28px 22px;text-align:center;box-shadow:0 0 22px rgba(0,0,0,.3);position:relative;overflow:hidden;">
+                    <div
+                        style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--amber),var(--gold));">
+                    </div>
+                    <div
+                        style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#2a1400,var(--amber));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 18px rgba(251,133,0,.28);font-size:1.8rem;">
+                        👨‍💻
+                    </div>
+                    <div
+                        style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--amber);letter-spacing:2px;margin-bottom:6px;">
+                        DEVELOPER</div>
+                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                        Member 5</div>
+                    <div
+                        style="background:rgba(251,133,0,.08);border:1px solid rgba(251,133,0,.25);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
+                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--amber);">1604-25-733-046</span>
+                    </div>
+                    <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
+                        Output Demonstration<br />Testing &amp; Verification
+                    </div>
+                </div>
+
+                <!-- Member 6 -->
+                <div
+                    style="background:var(--card);border:1px solid rgba(0,180,216,.18);border-radius:16px;padding:28px 22px;text-align:center;box-shadow:0 0 22px rgba(0,0,0,.3);position:relative;overflow:hidden;">
+                    <div
+                        style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--sky));">
+                    </div>
+                    <div
+                        style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--deep),var(--blue));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 18px rgba(6,90,130,.4);font-size:1.8rem;">
+                        👩‍💻
+                    </div>
+                    <div
+                        style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:#4A9EBF;letter-spacing:2px;margin-bottom:6px;">
+                        DEVELOPER</div>
+                    <div style="font-size:1rem;font-weight:700;color:var(--white);font-family:'Exo 2',sans-serif;margin-bottom:8px;">
+                        Member 6</div>
+                    <div
+                        style="background:rgba(6,90,130,.15);border:1px solid rgba(6,90,130,.35);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px;">
+                        <span style="font-family:'Fira Code',monospace;font-size:.8rem;color:#4A9EBF;">1604-25-733-052</span>
+                    </div>
+                    <div style="font-size:.8rem;color:var(--muted);font-family:'Exo 2',sans-serif;line-height:1.6;">
+                        Advantages &amp; Limitations<br />Conclusion &amp; Summary
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Built by / Supported by row -->
+            <div style="background:rgba(0,180,216,.05);border:1px solid rgba(0,180,216,.15);border-radius:14px;padding:28px 32px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
+
+                    <!-- Built by -->
+                    <div>
+                        <div
+                            style="font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:var(--glow);letter-spacing:2px;margin-bottom:14px;">
+                            🔨 BUILT BY</div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div
+                                    style="width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 6px rgba(0,180,216,.6);flex-shrink:0;">
+                                </div>
+                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--glowlt);">1604-25-733-050</span>
+                                <span style="font-size:.78rem;color:var(--muted);">— Lead Developer</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div
+                                    style="width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 6px rgba(0,180,216,.6);flex-shrink:0;">
+                                </div>
+                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--glowlt);">1604-25-733-050</span>
+                                <span style="font-size:.78rem;color:var(--muted);">— Developer</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div
+                                    style="width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 6px rgba(0,180,216,.6);flex-shrink:0;">
+                                </div>
+                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:var(--glowlt);">1604-25-733-011</span>
+                                <span style="font-size:.78rem;color:var(--muted);">— Developer</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Supported by -->
+                    <div>
+                        <div
+                            style="font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:14px;">
+                            🤝 SUPPORTED BY</div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div
+                                    style="width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(255,183,3,.5);flex-shrink:0;">
+                                </div>
+                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:#FFD569;">1604-25-733-020</span>
+                                <span style="font-size:.78rem;color:var(--muted);">— Developer</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div
+                                    style="width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(255,183,3,.5);flex-shrink:0;">
+                                </div>
+                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:#FFD569;">1604-25-733-046</span>
+                                <span style="font-size:.78rem;color:var(--muted);">— Developer</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div
+                                    style="width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(255,183,3,.5);flex-shrink:0;">
+                                </div>
+                                <span style="font-family:'Fira Code',monospace;font-size:.82rem;color:#FFD569;">1604-25-733-052</span>
+                                <span style="font-size:.78rem;color:var(--muted);">— Developer</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">CART·SYS</div>
+        <div class="footer-sub">Shopping Cart System · Python Dictionary Implementation</div>
+
+    </footer>
+
+    <script>
+        // ── MOBILE MENU ──────────────────────────────────────────────────────────────
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        function toggleMenu() {
+            menuToggle.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        }
+
+        menuToggle.addEventListener('click', toggleMenu);
+
+        // ── PARTICLES ────────────────────────────────────────────────────────────────
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let W, H, particles = [];
+        function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+        resize(); window.addEventListener('resize', resize);
+        for (let i = 0; i < 80; i++) particles.push({
+            x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+            vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25,
+            r: Math.random() * 1.5 + .5, a: Math.random() * .5 + .1
+        });
+        function drawParticles() {
+            ctx.clearRect(0, 0, W, H);
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+                if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0,180,216,${p.a})`; ctx.fill();
+            });
+            particles.forEach((p, i) => {
+                particles.slice(i + 1).forEach(q => {
+                    const d = Math.hypot(p.x - q.x, p.y - q.y);
+                    if (d < 120) {
+                        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+                        ctx.strokeStyle = `rgba(0,180,216,${.12 * (1 - d / 120)})`; ctx.lineWidth = .5; ctx.stroke();
+                    }
+                });
+            });
+            requestAnimationFrame(drawParticles);
+        }
+        drawParticles();
+
+        // ── HERO MINI CART ────────────────────────────────────────────────────────────
+        const heroCart = {};
+        const demoItems = [['🍚', 'Rice', 60], ['🥛', 'Milk', 30], ['🧈', 'Butter', 55], ['🍞', 'Bread', 45]];
+        let demoIdx = 0;
+        function heroUpdate() {
+            const el = document.getElementById('hero-items');
+            el.innerHTML = '';
+            Object.entries(heroCart).forEach(([n, p]) => {
+                const d = document.createElement('div');
+                d.className = 'demo-row';
+                d.innerHTML = `<span class="demo-emoji">🛒</span><span class="demo-name">${n}</span><span class="demo-price">₹${p.toFixed(2)}</span>`;
+                el.appendChild(d);
+            });
+            const total = Object.values(heroCart).reduce((a, b) => a + b, 0);
+            document.getElementById('hero-total').textContent = `₹${total.toFixed(2)}`;
+        }
+        function heroAdd() {
+            const n = document.getElementById('h-name').value.trim();
+            const p = parseFloat(document.getElementById('h-price').value);
+            if (!n || isNaN(p) || p < 0) return;
+            heroCart[n] = p;
+            document.getElementById('h-name').value = '';
+            document.getElementById('h-price').value = '';
+            heroUpdate();
+        }
+        function heroRemove() {
+            const n = document.getElementById('h-name').value.trim();
+            if (heroCart[n]) delete heroCart[n];
+            heroUpdate();
+        }
+        // Auto-demo
+        (function autoDemoLoop() {
+            setTimeout(() => {
+                const [, name, price] = demoItems[demoIdx % demoItems.length];
+                heroCart[name] = price; demoIdx++; heroUpdate();
+                setTimeout(() => { autoDemoLoop(); }, 1800);
+            }, 1400);
+        })();
+
+        // ── LIVE DEMO — silently calls Flask API in background ─────────────────────
+        const API = '';  // empty = same origin, Flask serves this file
+
+        function highlightCodeByAction(action) {
+            const map = { 'add': 'code-add-logic', 'remove': 'code-remove-logic', 'calc': 'code-calc-logic' };
+            const id = map[action];
+            if (!id) return;
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.add('code-highlight');
+            setTimeout(() => el.classList.remove('code-highlight'), 1200);
+        }
+
+        function highlightCode(id) { document.getElementById(id)?.classList.add('code-highlight'); }
+        function unhighlightCode() { document.querySelectorAll('.code-highlight').forEach(e => e.classList.remove('code-highlight')); }
+
+        function confettiBurst(x, y) {
+            const colors = ['#00B4D8', '#90E0EF', '#1282A2', '#FFB703'];
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.className = 'confetti-p';
+                const size = Math.random() * 6 + 4;
+                p.style.width = p.style.height = `${size}px`;
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                p.style.left = `${x}px`; p.style.top = `${y}px`;
+                const tx = (Math.random() - 0.5) * 300;
+                const ty = (Math.random() - 0.5) * 300;
+                const tr = Math.random() * 720;
+                p.style.setProperty('--tx', `${tx}px`);
+                p.style.setProperty('--ty', `${ty}px`);
+                p.style.setProperty('--tr', `${tr}deg`);
+                p.style.animation = `confettiFall ${Math.random() * 1 + 0.5}s ease-out forwards`;
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 1500);
+            }
+        }
+
+        function logMsg(msg, type = 'success') {
+            const log = document.getElementById('msg-log');
+            const el = document.createElement('div');
+            el.className = `msg-item ${type}`; el.textContent = msg;
+            log.prepend(el);
+            setTimeout(() => el.remove(), 4000);
+        }
+        function termLine(txt, cls = 't-line') {
+            const tb = document.getElementById('terminal-body');
+            const sp = document.createElement('span');
+            sp.className = `t-line ${cls}`; sp.textContent = txt;
+            tb.appendChild(sp);
+            tb.scrollTop = tb.scrollHeight;
+        }
+        function updateSummary(cart) {
+            const el = document.getElementById('summary-items');
+            const entries = Object.entries(cart || {});
+            if (!entries.length) {
+                el.innerHTML = '<div style="color:rgba(142,202,230,.35);font-size:.85rem;font-style:italic;">Cart is empty</div>';
+                document.getElementById('summary-total').textContent = '₹0.00';
+                return;
+            }
+            el.innerHTML = entries.map(([n, p]) => `
+    <div class="summary-row">
+      <span class="summary-name">${n}</span>
+      <span class="summary-price">₹${parseFloat(p).toFixed(2)}</span>
+    </div>`).join('');
+            const total = entries.reduce((a, [, p]) => a + parseFloat(p), 0);
+            document.getElementById('summary-total').textContent = `₹${total.toFixed(2)}`;
+        }
+
+        // CONDITION 1 — calls POST /cart/add → cart[name] = price in Python
+        async function demoAdd(e) {
+            const n = document.getElementById('d-name').value.trim();
+            const p = parseFloat(document.getElementById('d-price').value);
+            if (!n) { logMsg('Enter a product name', 'error'); return; }
+            if (isNaN(p) || p < 0) { logMsg('Enter a valid price', 'error'); return; }
+            termLine(`>>> add_product("${n}", ${p})`, 't-prompt');
+            try {
+                const res = await fetch(`${API}/cart/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: n, price: p })
+                });
+                const d = await res.json();
+                if (d.success) {
+                    logMsg(`✅ '${n}' added at ₹${p.toFixed(2)}`, 'success');
+                    termLine(`  ✅  '${n}' added at ₹${p.toFixed(2)}`, 't-ok');
+                    highlightCodeByAction('add');
+                    confettiBurst(window.innerWidth / 2, window.innerHeight / 2);
+                    updateSummary(d.data.cart);
+                    document.getElementById('d-name').value = '';
+                    document.getElementById('d-price').value = '';
+                    const qtyEl = document.getElementById('d-qty');
+                    if (qtyEl) qtyEl.value = '1';
+                } else {
+                    logMsg(d.message, 'error');
+                    termLine(`  ⚠️  ${d.message}`, 't-err');
+                }
+            } catch (err) {
+                logMsg('Backend offline — run: python app.py', 'error');
+                termLine('  ❌  Cannot reach Python backend.', 't-err');
+            }
+        }
+
+        // CONDITION 2 — calls DELETE /cart/remove/<n> → del cart[name] in Python
+        async function demoRemove() {
+            const n = document.getElementById('d-name').value.trim();
+            if (!n) { logMsg('Enter product name to remove', 'error'); return; }
+            termLine(`>>> remove_product("${n}")`, 't-prompt');
+            try {
+                const res = await fetch(`${API}/cart/remove/${encodeURIComponent(n)}`, { method: 'DELETE' });
+                const d = await res.json();
+                if (d.success) {
+                    logMsg(`🗑️ '${n}' removed`, 'warn');
+                    termLine(`  🗑️  '${n}' removed from cart.`, 't-warn');
+                    highlightCodeByAction('remove');
+                    updateSummary(d.data.cart);
+                } else {
+                    logMsg(`⚠️ '${n}' not found in cart`, 'error');
+                    termLine(`  ⚠️  '${n}' not found.`, 't-err');
+                }
+            } catch (err) {
+                logMsg('Backend offline — run: python app.py', 'error');
+                termLine('  ❌  Cannot reach Python backend.', 't-err');
+            }
+        }
+
+        // CONDITION 3 — calls GET /cart/total → sum(cart.values()) in Python
+        async function demoCalc() {
+            termLine(`>>> calculate_total()`, 't-prompt');
+            try {
+                const res = await fetch(`${API}/cart/total`);
+                const d = await res.json();
+                const entries = d.data.breakdown || [];
+                if (!entries.length) { termLine('  Cart is empty.', 't-err'); logMsg('Cart is empty', 'error'); return; }
+                highlightCodeByAction('calc');
+                confettiBurst(window.innerWidth / 2, window.innerHeight / 2);
+                termLine('  ─────────────────────────────', 't-dim');
+                termLine('  Product              Price', 't-input');
+                termLine('  ─────────────────────────────', 't-dim');
+                entries.forEach(({ name: n, price: p }) => termLine(`  ${n.padEnd(20)} ₹${parseFloat(p).toFixed(2)}`, 't-input'));
+                termLine('  ─────────────────────────────', 't-dim');
+                termLine(`  TOTAL BILL           ₹${parseFloat(d.data.total).toFixed(2)}`, 't-total');
+                termLine('  ─────────────────────────────', 't-dim');
+                logMsg(`💰 Total Bill: ₹${parseFloat(d.data.total).toFixed(2)}`, 'success');
+                updateSummary(d.data.cart);
+            } catch (err) {
+                logMsg('Backend offline — run: python app.py', 'error');
+                termLine('  ❌  Cannot reach Python backend.', 't-err');
+            }
+        }
+
+        // calls DELETE /cart/clear → cart.clear() in Python
+        async function demoClear() {
+            try {
+                await fetch(`${API}/cart/clear`, { method: 'DELETE' });
+                termLine('>>> # Cart cleared', 't-dim');
+                termLine('  All items removed.', 't-warn');
+                updateSummary({});
+                logMsg('Cart cleared', 'warn');
+            } catch (err) {
+                logMsg('Backend offline — run: python app.py', 'error');
+                termLine('  ❌  Cannot reach Python backend.', 't-err');
+            }
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && document.activeElement.id === 'd-price') demoAdd();
+        });
+
+        // ── SCROLL REVEAL ─────────────────────────────────────────────────────────────
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: .12 });
+        document.querySelectorAll('.concept-card,.algo-step,.code-editor,.code-right,.backend-file,.backend-info,.demo-controls,.terminal-panel,.app-card,.adv-item').forEach(el => observer.observe(el));
+
+        // ── ADVANTAGES DATA ───────────────────────────────────────────────────────────
+        const advPlus = [
+            'Fast O(1) lookup — no loops needed to find a product',
+            'Extremely simple and readable Python code',
+            'Easy to add or remove items dynamically',
+            'sum(values()) calculates total in one line',
+            'Great foundation for learning data structures',
+            'Easily extended: add quantity, discount, tax',
+        ];
+        const advMinus = [
+            'Data is lost when the program closes (no database)',
+            'No duplicate product names — keys must be unique',
+            'Basic scripts lack quantity support (fixed in this demo)',
+            'No discount or tax calculation built-in',
+            'Not suitable for multi-user access simultaneously',
+            'Text-only interface — no GUI or web frontend',
+        ];
+        function buildAdv(items, containerId, type) {
+            const el = document.getElementById(containerId);
+            items.forEach((text, i) => {
+                const d = document.createElement('div');
+                d.className = 'adv-item';
+                d.style.transitionDelay = `${i * .06}s`;
+                d.innerHTML = `<div class="adv-dot ${type}"></div><div class="adv-text">${text}</div>`;
+                el.appendChild(d);
+                observer.observe(d);
+            });
+        }
+        buildAdv(advPlus, 'adv-plus', 'plus');
+        buildAdv(advMinus, 'adv-minus', 'minus');
+
+        // ── NAV ACTIVE HIGHLIGHT ──────────────────────────────────────────────────────
+        window.addEventListener('scroll', () => {
+            const sections = ['hero', 'concepts', 'algorithm', 'code', 'backend', 'demo', 'realworld', 'advantages'];
+            let current = '';
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && el.getBoundingClientRect().top < 120) current = id;
+            });
+            document.querySelectorAll('.nav-links a').forEach(a => {
+                a.style.color = a.getAttribute('href') === '#' + current ? 'var(--glow)' : '';
+            });
+            const nav = document.querySelector('nav');
+            nav.style.background = scrollY > 50 ? 'rgba(2,11,24,.92)' : 'rgba(2,11,24,.75)';
+            
+            // Progress Bar
+            const totalH = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (window.scrollY / totalH) * 100;
+            document.getElementById('scroll-progress').style.width = progress + '%';
+
+            // Back to Top
+            const btt = document.getElementById('back-to-top');
+            if (window.scrollY > 500) btt.classList.add('visible');
+            else btt.classList.remove('visible');
+        });
+    </script>
+</body>
+
+</html>
