@@ -1792,6 +1792,48 @@
                 padding: 12px;
             }
         }
+
+        /* ── CART ANIMATIONS ── */
+        .summary-row {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: left center;
+        }
+
+        .anim-enter {
+            animation: rowIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .anim-exit {
+            animation: rowOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+        }
+
+        @keyframes rowIn {
+            0% { opacity: 0; transform: translateX(30px) scale(0.9); }
+            100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        @keyframes rowOut {
+            0% { opacity: 1; transform: translateX(0) scale(1); }
+            100% { opacity: 0; transform: translateX(-30px) scale(0.9); height: 0; margin: 0; padding: 0; }
+        }
+
+        @keyframes pulseTotal {
+            0% { transform: scale(1); text-shadow: 0 0 0 rgba(0,180,216,0); }
+            50% { transform: scale(1.1); text-shadow: 0 0 20px rgba(0,180,216,0.8); color: var(--white); }
+            100% { transform: scale(1); text-shadow: 0 0 0 rgba(0,180,216,0); }
+        }
+
+        .pulse-anim {
+            animation: pulseTotal 0.6s ease-in-out;
+        }
+
+        .scanning-highlight {
+            background: rgba(0, 180, 216, 0.15);
+            box-shadow: 0 0 15px rgba(0, 180, 216, 0.3);
+            border-radius: 4px;
+            transform: scale(1.02);
+            z-index: 10;
+        }
     </style>
 </head>
 
@@ -2780,7 +2822,7 @@
           tb.scrollTop = tb.scrollHeight;
         }
 
-        function updateSummary(){
+        function updateSummary(lastItemName = null){
           const el      = document.getElementById('summary-items');
           const entries = Object.entries(dCart);
           if(!entries.length){
@@ -2788,13 +2830,23 @@
             document.getElementById('summary-total').textContent = '₹0.00';
             return;
           }
-          el.innerHTML = entries.map(([n,p])=>`
-            <div class="summary-row">
+          el.innerHTML = entries.map(([n,p])=>{
+            const isNew = n === lastItemName ? 'anim-enter' : '';
+            return `
+            <div class="summary-row ${isNew}" data-name="${n}">
               <span class="summary-name">${n}</span>
               <span class="summary-price">₹${parseFloat(p).toFixed(2)}</span>
-            </div>`).join('');
+            </div>`;
+          }).join('');
+          
+          const totalEl = document.getElementById('summary-total');
           const total = entries.reduce((a,[,p]) => a + parseFloat(p), 0);
-          document.getElementById('summary-total').textContent = `₹${total.toFixed(2)}`;
+          totalEl.textContent = `₹${total.toFixed(2)}`;
+          
+          // Pulse the total
+          totalEl.classList.remove('pulse-anim');
+          void totalEl.offsetWidth; // trigger reflow
+          totalEl.classList.add('pulse-anim');
         }
 
         // CONDITION 1 — Add product and price → dCart[n] = p  (same as cart[name]=price in Python)
@@ -2809,7 +2861,7 @@
           logMsg(`✅ '${n}' added at ₹${p.toFixed(2)}`,'success');
           termLine(`>>> add_product("${n}", ${p})`,'t-prompt');
           termLine(`  ✅  '${n}' added at ₹${p.toFixed(2)}`,'t-ok');
-          updateSummary();
+          updateSummary(n);
           document.getElementById('d-name').value  = '';
           document.getElementById('d-price').value = '';
         }
@@ -2821,18 +2873,27 @@
 
           termLine(`>>> remove_product("${n}")`,'t-prompt');
           if(dCart[n] !== undefined){
-            delete dCart[n];                                 // CONDITION 2 — same as del cart[name]
-            logMsg(`🗑️ '${n}' removed`,'warn');
-            termLine(`  🗑️  '${n}' removed from cart.`,'t-warn');
+            const row = document.querySelector(`.summary-row[data-name="${n}"]`);
+            if(row) {
+              row.classList.add('anim-exit');
+              setTimeout(() => {
+                delete dCart[n];
+                logMsg(`🗑️ '${n}' removed`,'warn');
+                termLine(`  🗑️  '${n}' removed from cart.`,'t-warn');
+                updateSummary();
+              }, 400); // match animation duration
+            } else {
+              delete dCart[n];
+              updateSummary();
+            }
           } else {
             logMsg(`⚠️ '${n}' not found in cart`,'error');
             termLine(`  ⚠️  '${n}' not found.`,'t-err');
           }
-          updateSummary();
         }
 
         // CONDITION 3 — Calculate total → Object.values(dCart).reduce(sum)  (same as sum(cart.values()))
-        function demoCalc(){
+        async function demoCalc(){
           termLine(`>>> calculate_total()`,'t-prompt');
           const entries = Object.entries(dCart);
           if(!entries.length){
@@ -2840,6 +2901,15 @@
             logMsg('Cart is empty','error');
             return;
           }
+
+          // Add scanning effect
+          const rows = document.querySelectorAll('.summary-row');
+          for(let row of rows) {
+              row.classList.add('scanning-highlight');
+              await new Promise(r => setTimeout(r, 100));
+              row.classList.remove('scanning-highlight');
+          }
+
           termLine('  ─────────────────────────────','t-dim');
           termLine('  Product              Price','t-input');
           termLine('  ─────────────────────────────','t-dim');
@@ -2849,14 +2919,29 @@
           termLine(`  TOTAL BILL           ₹${total.toFixed(2)}`,'t-total');
           termLine('  ─────────────────────────────','t-dim');
           logMsg(`💰 Total: ₹${total.toFixed(2)}`,'success');
+          
+          const totalEl = document.getElementById('summary-total');
+          totalEl.classList.remove('pulse-anim');
+          void totalEl.offsetWidth;
+          totalEl.classList.add('pulse-anim');
         }
 
         function demoClear(){
-          Object.keys(dCart).forEach(k => delete dCart[k]);  // same as cart.clear()
-          termLine('>>> # Cart cleared','t-dim');
-          termLine('  All items removed.','t-warn');
-          updateSummary();
-          logMsg('Cart cleared','warn');
+          const rows = document.querySelectorAll('.summary-row');
+          if(rows.length === 0) return;
+          
+          rows.forEach((row, i) => {
+              row.style.animationDelay = `${i * 0.1}s`;
+              row.classList.add('anim-exit');
+          });
+          
+          setTimeout(() => {
+            Object.keys(dCart).forEach(k => delete dCart[k]);  // same as cart.clear()
+            termLine('>>> # Cart cleared','t-dim');
+            termLine('  All items removed.','t-warn');
+            updateSummary();
+            logMsg('Cart cleared','warn');
+          }, rows.length * 100 + 400);
         }
 
         document.addEventListener('keydown', e => {
