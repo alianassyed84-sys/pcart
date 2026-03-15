@@ -2918,6 +2918,9 @@
           const total = entries.reduce((a,[,p]) => a + parseFloat(p), 0); // CONDITION 3 — same as sum(cart.values())
           termLine(`  TOTAL BILL           ₹${total.toFixed(2)}`,'t-total');
           termLine('  ─────────────────────────────','t-dim');
+          termLine('  THANK YOU FOR YOUR SHOPPING.','t-ok');
+          termLine('  VISIT AGAIN!','t-ok');
+          termLine('  ─────────────────────────────','t-dim');
           logMsg(`💰 Total: ₹${total.toFixed(2)}`,'success');
           
           const totalEl = document.getElementById('summary-total');
