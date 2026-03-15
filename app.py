@@ -9,14 +9,41 @@
 #   Step 3:  Open browser → http://localhost:5000
 # ============================================================
 
+import json
+import os
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-# THE CART DICTIONARY
+# THE CART DICTIONARY & PERSISTENCE
+DATA_FILE = "cart.json"
 cart = {}
+
+def load_data():
+    global cart
+    if os.path.exists(DATA_FILE):
+        try:
+            with open(DATA_FILE, "r") as f:
+                cart = json.load(f)
+            print(f"  [LOADED] {len(cart)} items from {DATA_FILE}")
+        except Exception as e:
+            print(f"  [ERROR] Loading {DATA_FILE}: {e}")
+            cart = {}
+    else:
+        cart = {}
+
+def save_data():
+    try:
+        with open(DATA_FILE, "w") as f:
+            json.dump(cart, f, indent=4)
+        # print(f"  [SAVED] {len(cart)} items to {DATA_FILE}")
+    except Exception as e:
+        print(f"  [ERROR] Saving {DATA_FILE}: {e}")
+
+# Initial load
+load_data()
 
 # Serve the website
 @app.route("/")
@@ -38,7 +65,9 @@ def add_product():
     if price < 0:
         return jsonify({"success": False, "message": "Price cannot be negative."}), 400
     cart[name] = price          # dictionary assignment
-    total = round(sum(cart.values()), 2)
+    save_data()                 # persist change
+    # Ensure float for round()
+    total = round(float(sum(cart.values())), 2)
     print(f"  ADDED: '{name}' = Rs.{price:.2f} | Total = Rs.{total}")
     return jsonify({
         "success": True,
@@ -52,8 +81,10 @@ def remove_product(name):
     name = name.strip()
     if name not in cart:
         return jsonify({"success": False, "message": f"'{name}' not found."}), 404
-    del cart[name]              # dictionary deletion
-    total = round(sum(cart.values()), 2)
+    cart.pop(name, None)        # safer dictionary deletion
+    save_data()                 # persist change
+    # Ensure float for round()
+    total = round(float(sum(cart.values())), 2)
     print(f"  REMOVED: '{name}' | Total = Rs.{total}")
     return jsonify({
         "success": True,
@@ -65,7 +96,7 @@ def remove_product(name):
 @app.route("/cart/total", methods=["GET"])
 def calculate_total():
     total = sum(cart.values())  # sum all dictionary values
-    total = round(total, 2)
+    total = round(float(total), 2)
     breakdown = [{"name": k, "price": v} for k, v in cart.items()]
     print(f"  TOTAL BILL: Rs.{total} | {len(cart)} item(s)")
     return jsonify({
@@ -82,7 +113,8 @@ def calculate_total():
 # EXTRA — View all items
 @app.route("/cart", methods=["GET"])
 def view_cart():
-    total = round(sum(cart.values()), 2)
+    # Ensure float for round()
+    total = round(float(sum(cart.values())), 2)
     breakdown = [{"name": k, "price": v} for k, v in cart.items()]
     return jsonify({
         "success": True,
@@ -95,6 +127,7 @@ def view_cart():
 def clear_cart():
     count = len(cart)
     cart.clear()
+    save_data()                 # persist change
     print(f"  CART CLEARED — {count} item(s) removed.")
     return jsonify({
         "success": True,

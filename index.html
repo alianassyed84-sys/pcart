@@ -291,6 +291,23 @@
             font-size: .8rem;
             font-weight: 700;
             letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #E06C75;
+            box-shadow: 0 0 8px rgba(224, 108, 117, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .status-dot.online {
+            background: #98C379;
+            box-shadow: 0 0 8px rgba(152, 195, 121, 0.8);
         }
 
         /* ── SECTIONS ── */
@@ -2741,171 +2758,109 @@
             }, 1400);
         })();
 
-        // ── LIVE DEMO — silently calls Flask API in background ─────────────────────
-        const API = '';  // empty = same origin, Flask serves this file
+        // ── LIVE DEMO — uses local JavaScript only, zero Flask needed ──────────────
+        // cart dictionary lives in JavaScript — always works, no server required
+        const dCart = {};   // this IS the cart — same logic as Python dict
 
-        function highlightCodeByAction(action) {
-            const map = { 'add': 'code-add-logic', 'remove': 'code-remove-logic', 'calc': 'code-calc-logic' };
-            const id = map[action];
-            if (!id) return;
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.classList.add('code-highlight');
-            setTimeout(() => el.classList.remove('code-highlight'), 1200);
-        }
-
-        function highlightCode(id) { document.getElementById(id)?.classList.add('code-highlight'); }
-        function unhighlightCode() { document.querySelectorAll('.code-highlight').forEach(e => e.classList.remove('code-highlight')); }
-
-        function confettiBurst(x, y) {
-            const colors = ['#00B4D8', '#90E0EF', '#1282A2', '#FFB703'];
-            for (let i = 0; i < 30; i++) {
-                const p = document.createElement('div');
-                p.className = 'confetti-p';
-                const size = Math.random() * 6 + 4;
-                p.style.width = p.style.height = `${size}px`;
-                p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.left = `${x}px`; p.style.top = `${y}px`;
-                const tx = (Math.random() - 0.5) * 300;
-                const ty = (Math.random() - 0.5) * 300;
-                const tr = Math.random() * 720;
-                p.style.setProperty('--tx', `${tx}px`);
-                p.style.setProperty('--ty', `${ty}px`);
-                p.style.setProperty('--tr', `${tr}deg`);
-                p.style.animation = `confettiFall ${Math.random() * 1 + 0.5}s ease-out forwards`;
-                document.body.appendChild(p);
-                setTimeout(() => p.remove(), 1500);
-            }
+        function logMsg(msg, type='success'){
+          const log = document.getElementById('msg-log');
+          const el  = document.createElement('div');
+          el.className = `msg-item ${type}`;
+          el.textContent = msg;
+          log.prepend(el);
+          setTimeout(()=> el.remove(), 4000);
         }
 
-        function logMsg(msg, type = 'success') {
-            const log = document.getElementById('msg-log');
-            const el = document.createElement('div');
-            el.className = `msg-item ${type}`; el.textContent = msg;
-            log.prepend(el);
-            setTimeout(() => el.remove(), 4000);
-        }
-        function termLine(txt, cls = 't-line') {
-            const tb = document.getElementById('terminal-body');
-            const sp = document.createElement('span');
-            sp.className = `t-line ${cls}`; sp.textContent = txt;
-            tb.appendChild(sp);
-            tb.scrollTop = tb.scrollHeight;
-        }
-        function updateSummary(cart) {
-            const el = document.getElementById('summary-items');
-            const entries = Object.entries(cart || {});
-            if (!entries.length) {
-                el.innerHTML = '<div style="color:rgba(142,202,230,.35);font-size:.85rem;font-style:italic;">Cart is empty</div>';
-                document.getElementById('summary-total').textContent = '₹0.00';
-                return;
-            }
-            el.innerHTML = entries.map(([n, p]) => `
-    <div class="summary-row">
-      <span class="summary-name">${n}</span>
-      <span class="summary-price">₹${parseFloat(p).toFixed(2)}</span>
-    </div>`).join('');
-            const total = entries.reduce((a, [, p]) => a + parseFloat(p), 0);
-            document.getElementById('summary-total').textContent = `₹${total.toFixed(2)}`;
+        function termLine(txt, cls='t-line'){
+          const tb = document.getElementById('terminal-body');
+          const sp = document.createElement('span');
+          sp.className = `t-line ${cls}`;
+          sp.textContent = txt;
+          tb.appendChild(sp);
+          tb.scrollTop = tb.scrollHeight;
         }
 
-        // CONDITION 1 — calls POST /cart/add → cart[name] = price in Python
-        async function demoAdd(e) {
-            const n = document.getElementById('d-name').value.trim();
-            const p = parseFloat(document.getElementById('d-price').value);
-            if (!n) { logMsg('Enter a product name', 'error'); return; }
-            if (isNaN(p) || p < 0) { logMsg('Enter a valid price', 'error'); return; }
-            termLine(`>>> add_product("${n}", ${p})`, 't-prompt');
-            try {
-                const res = await fetch(`${API}/cart/add`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: n, price: p })
-                });
-                const d = await res.json();
-                if (d.success) {
-                    logMsg(`✅ '${n}' added at ₹${p.toFixed(2)}`, 'success');
-                    termLine(`  ✅  '${n}' added at ₹${p.toFixed(2)}`, 't-ok');
-                    highlightCodeByAction('add');
-                    confettiBurst(window.innerWidth / 2, window.innerHeight / 2);
-                    updateSummary(d.data.cart);
-                    document.getElementById('d-name').value = '';
-                    document.getElementById('d-price').value = '';
-                    const qtyEl = document.getElementById('d-qty');
-                    if (qtyEl) qtyEl.value = '1';
-                } else {
-                    logMsg(d.message, 'error');
-                    termLine(`  ⚠️  ${d.message}`, 't-err');
-                }
-            } catch (err) {
-                logMsg('Backend offline — run: python app.py', 'error');
-                termLine('  ❌  Cannot reach Python backend.', 't-err');
-            }
+        function updateSummary(){
+          const el      = document.getElementById('summary-items');
+          const entries = Object.entries(dCart);
+          if(!entries.length){
+            el.innerHTML = '<div style="color:rgba(142,202,230,.35);font-size:.85rem;font-style:italic;">Cart is empty — add a product above</div>';
+            document.getElementById('summary-total').textContent = '₹0.00';
+            return;
+          }
+          el.innerHTML = entries.map(([n,p])=>`
+            <div class="summary-row">
+              <span class="summary-name">${n}</span>
+              <span class="summary-price">₹${parseFloat(p).toFixed(2)}</span>
+            </div>`).join('');
+          const total = entries.reduce((a,[,p]) => a + parseFloat(p), 0);
+          document.getElementById('summary-total').textContent = `₹${total.toFixed(2)}`;
         }
 
-        // CONDITION 2 — calls DELETE /cart/remove/<n> → del cart[name] in Python
-        async function demoRemove() {
-            const n = document.getElementById('d-name').value.trim();
-            if (!n) { logMsg('Enter product name to remove', 'error'); return; }
-            termLine(`>>> remove_product("${n}")`, 't-prompt');
-            try {
-                const res = await fetch(`${API}/cart/remove/${encodeURIComponent(n)}`, { method: 'DELETE' });
-                const d = await res.json();
-                if (d.success) {
-                    logMsg(`🗑️ '${n}' removed`, 'warn');
-                    termLine(`  🗑️  '${n}' removed from cart.`, 't-warn');
-                    highlightCodeByAction('remove');
-                    updateSummary(d.data.cart);
-                } else {
-                    logMsg(`⚠️ '${n}' not found in cart`, 'error');
-                    termLine(`  ⚠️  '${n}' not found.`, 't-err');
-                }
-            } catch (err) {
-                logMsg('Backend offline — run: python app.py', 'error');
-                termLine('  ❌  Cannot reach Python backend.', 't-err');
-            }
+        // CONDITION 1 — Add product and price → dCart[n] = p  (same as cart[name]=price in Python)
+        function demoAdd(){
+          const n = document.getElementById('d-name').value.trim();
+          const p = parseFloat(document.getElementById('d-price').value);
+          if(!n){ logMsg('Enter a product name','error'); return; }
+          if(isNaN(p) || p < 0){ logMsg('Enter a valid price','error'); return; }
+
+          dCart[n] = p;                                      // CONDITION 1 — same as cart[name] = price
+
+          logMsg(`✅ '${n}' added at ₹${p.toFixed(2)}`,'success');
+          termLine(`>>> add_product("${n}", ${p})`,'t-prompt');
+          termLine(`  ✅  '${n}' added at ₹${p.toFixed(2)}`,'t-ok');
+          updateSummary();
+          document.getElementById('d-name').value  = '';
+          document.getElementById('d-price').value = '';
         }
 
-        // CONDITION 3 — calls GET /cart/total → sum(cart.values()) in Python
-        async function demoCalc() {
-            termLine(`>>> calculate_total()`, 't-prompt');
-            try {
-                const res = await fetch(`${API}/cart/total`);
-                const d = await res.json();
-                const entries = d.data.breakdown || [];
-                if (!entries.length) { termLine('  Cart is empty.', 't-err'); logMsg('Cart is empty', 'error'); return; }
-                highlightCodeByAction('calc');
-                confettiBurst(window.innerWidth / 2, window.innerHeight / 2);
-                termLine('  ─────────────────────────────', 't-dim');
-                termLine('  Product              Price', 't-input');
-                termLine('  ─────────────────────────────', 't-dim');
-                entries.forEach(({ name: n, price: p }) => termLine(`  ${n.padEnd(20)} ₹${parseFloat(p).toFixed(2)}`, 't-input'));
-                termLine('  ─────────────────────────────', 't-dim');
-                termLine(`  TOTAL BILL           ₹${parseFloat(d.data.total).toFixed(2)}`, 't-total');
-                termLine('  ─────────────────────────────', 't-dim');
-                logMsg(`💰 Total Bill: ₹${parseFloat(d.data.total).toFixed(2)}`, 'success');
-                updateSummary(d.data.cart);
-            } catch (err) {
-                logMsg('Backend offline — run: python app.py', 'error');
-                termLine('  ❌  Cannot reach Python backend.', 't-err');
-            }
+        // CONDITION 2 — Remove product → delete dCart[n]  (same as del cart[name] in Python)
+        function demoRemove(){
+          const n = document.getElementById('d-name').value.trim();
+          if(!n){ logMsg('Enter product name to remove','error'); return; }
+
+          termLine(`>>> remove_product("${n}")`,'t-prompt');
+          if(dCart[n] !== undefined){
+            delete dCart[n];                                 // CONDITION 2 — same as del cart[name]
+            logMsg(`🗑️ '${n}' removed`,'warn');
+            termLine(`  🗑️  '${n}' removed from cart.`,'t-warn');
+          } else {
+            logMsg(`⚠️ '${n}' not found in cart`,'error');
+            termLine(`  ⚠️  '${n}' not found.`,'t-err');
+          }
+          updateSummary();
         }
 
-        // calls DELETE /cart/clear → cart.clear() in Python
-        async function demoClear() {
-            try {
-                await fetch(`${API}/cart/clear`, { method: 'DELETE' });
-                termLine('>>> # Cart cleared', 't-dim');
-                termLine('  All items removed.', 't-warn');
-                updateSummary({});
-                logMsg('Cart cleared', 'warn');
-            } catch (err) {
-                logMsg('Backend offline — run: python app.py', 'error');
-                termLine('  ❌  Cannot reach Python backend.', 't-err');
-            }
+        // CONDITION 3 — Calculate total → Object.values(dCart).reduce(sum)  (same as sum(cart.values()))
+        function demoCalc(){
+          termLine(`>>> calculate_total()`,'t-prompt');
+          const entries = Object.entries(dCart);
+          if(!entries.length){
+            termLine('  Cart is empty.','t-err');
+            logMsg('Cart is empty','error');
+            return;
+          }
+          termLine('  ─────────────────────────────','t-dim');
+          termLine('  Product              Price','t-input');
+          termLine('  ─────────────────────────────','t-dim');
+          entries.forEach(([n,p]) => termLine(`  ${n.padEnd(20)} ₹${parseFloat(p).toFixed(2)}`,'t-input'));
+          termLine('  ─────────────────────────────','t-dim');
+          const total = entries.reduce((a,[,p]) => a + parseFloat(p), 0); // CONDITION 3 — same as sum(cart.values())
+          termLine(`  TOTAL BILL           ₹${total.toFixed(2)}`,'t-total');
+          termLine('  ─────────────────────────────','t-dim');
+          logMsg(`💰 Total: ₹${total.toFixed(2)}`,'success');
         }
+
+        function demoClear(){
+          Object.keys(dCart).forEach(k => delete dCart[k]);  // same as cart.clear()
+          termLine('>>> # Cart cleared','t-dim');
+          termLine('  All items removed.','t-warn');
+          updateSummary();
+          logMsg('Cart cleared','warn');
+        }
+
         document.addEventListener('keydown', e => {
-            if (e.key === 'Enter' && document.activeElement.id === 'd-price') demoAdd();
+          if(e.key === 'Enter' && document.activeElement.id === 'd-price') demoAdd();
         });
 
         // ── SCROLL REVEAL ─────────────────────────────────────────────────────────────
@@ -2969,6 +2924,8 @@
             if (window.scrollY > 500) btt.classList.add('visible');
             else btt.classList.remove('visible');
         });
+
+
     </script>
 </body>
 
