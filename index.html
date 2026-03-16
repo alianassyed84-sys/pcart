@@ -2935,17 +2935,18 @@
                 document.getElementById('summary-total').textContent = '₹0.00';
                 return;
             }
-            el.innerHTML = entries.map(([n, p]) => {
+            el.innerHTML = entries.map(([n, item]) => {
                 const isNew = n === lastItemName ? 'anim-enter' : '';
+                const displayName = item.qty > 1 ? `${n} x ${item.qty}` : n;
                 return `
             <div class="summary-row ${isNew}" data-name="${n}">
-              <span class="summary-name">${n}</span>
-              <span class="summary-price">₹${parseFloat(p).toFixed(2)}</span>
+              <span class="summary-name">${displayName}</span>
+              <span class="summary-price">₹${parseFloat(item.total).toFixed(2)}</span>
             </div>`;
             }).join('');
 
             const totalEl = document.getElementById('summary-total');
-            const total = entries.reduce((a, [, p]) => a + parseFloat(p), 0);
+            const total = entries.reduce((a, [, item]) => a + parseFloat(item.total), 0);
             totalEl.textContent = `₹${total.toFixed(2)}`;
 
             // Pulse the total
@@ -2958,17 +2959,22 @@
         function demoAdd() {
             const n = document.getElementById('d-name').value.trim();
             const p = parseFloat(document.getElementById('d-price').value);
+            const q = parseInt(document.getElementById('d-qty').value) || 1;
+            
             if (!n) { logMsg('Enter a product name', 'error'); return; }
             if (isNaN(p) || p < 0) { logMsg('Enter a valid price', 'error'); return; }
+            if (q < 1) { logMsg('Quantity must be at least 1', 'error'); return; }
 
-            dCart[n] = p;                                      // CONDITION 1 — same as cart[name] = price
+            const itemTotal = p * q;
+            dCart[n] = { price: p, qty: q, total: itemTotal };  // CONDITION 1 — same as cart[name] = price
 
-            logMsg(`✅ '${n}' added at ₹${p.toFixed(2)}`, 'success');
-            termLine(`>>> add_product("${n}", ${p})`, 't-prompt');
-            termLine(`  ✅  '${n}' added at ₹${p.toFixed(2)}`, 't-ok');
+            logMsg(`✅ '${n}' added (${q}x) at ₹${itemTotal.toFixed(2)}`, 'success');
+            termLine(`>>> add_product("${n}", ${p}, quantity=${q})`, 't-prompt');
+            termLine(`  ✅  '${n}' added at ₹${itemTotal.toFixed(2)}`, 't-ok');
             updateSummary(n);
             document.getElementById('d-name').value = '';
             document.getElementById('d-price').value = '';
+            document.getElementById('d-qty').value = '1';
         }
 
         // CONDITION 2 — Remove product → delete dCart[n]  (same as del cart[name] in Python)
@@ -3018,9 +3024,9 @@
             termLine('  ─────────────────────────────', 't-dim');
             termLine('  Product              Price', 't-input');
             termLine('  ─────────────────────────────', 't-dim');
-            entries.forEach(([n, p]) => termLine(`  ${n.padEnd(20)} ₹${parseFloat(p).toFixed(2)}`, 't-input'));
+            entries.forEach(([n, item]) => termLine(`  ${n.padEnd(20)} ₹${parseFloat(item.total).toFixed(2)}`, 't-input'));
             termLine('  ─────────────────────────────', 't-dim');
-            const total = entries.reduce((a, [, p]) => a + parseFloat(p), 0); // CONDITION 3 — same as sum(cart.values())
+            const total = entries.reduce((a, [, item]) => a + parseFloat(item.total), 0); // CONDITION 3 — same as sum(cart.values())
             termLine(`  TOTAL BILL           ₹${total.toFixed(2)}`, 't-total');
             termLine('  ─────────────────────────────', 't-dim');
             termLine('  THANK YOU FOR YOUR SHOPPING.', 't-ok');

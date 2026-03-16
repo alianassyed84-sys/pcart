@@ -56,22 +56,31 @@ def add_product():
     data  = request.get_json()
     name  = str(data.get("name", "")).strip()
     price = data.get("price")
+    qty   = data.get("quantity", 1)
+    
     if not name:
         return jsonify({"success": False, "message": "Enter product name."}), 400
     try:
         price = float(price)
+        qty = int(qty)
     except:
-        return jsonify({"success": False, "message": "Price must be a number."}), 400
+        return jsonify({"success": False, "message": "Price and quantity must be numbers."}), 400
+    
     if price < 0:
         return jsonify({"success": False, "message": "Price cannot be negative."}), 400
-    cart[name] = price          # dictionary assignment
+    if qty < 1:
+        return jsonify({"success": False, "message": "Quantity must be at least 1."}), 400
+        
+    item_total = price * qty
+    cart[name] = {"price": price, "qty": qty, "total": item_total}          # dictionary assignment
     save_data()                 # persist change
-    # Ensure float for round()
-    total = round(float(sum(cart.values())), 2)
-    print(f"  ADDED: '{name}' = Rs.{price:.2f} | Total = Rs.{total}")
+    
+    # Calculate overall total
+    total = round(float(sum(item["total"] for item in cart.values())), 2)
+    print(f"  ADDED: '{name}' (x{qty}) = Rs.{item_total:.2f} | Total = Rs.{total}")
     return jsonify({
         "success": True,
-        "message": f"'{name}' added at Rs.{price:.2f}",
+        "message": f"'{name}' added ({qty}x) at Rs.{item_total:.2f}",
         "data": {"cart": cart.copy(), "total": total, "items": len(cart)}
     })
 
@@ -83,8 +92,8 @@ def remove_product(name):
         return jsonify({"success": False, "message": f"'{name}' not found."}), 404
     cart.pop(name, None)        # safer dictionary deletion
     save_data()                 # persist change
-    # Ensure float for round()
-    total = round(float(sum(cart.values())), 2)
+    
+    total = round(float(sum(item["total"] for item in cart.values())), 2)
     print(f"  REMOVED: '{name}' | Total = Rs.{total}")
     return jsonify({
         "success": True,
@@ -95,9 +104,9 @@ def remove_product(name):
 # CONDITION 3 — Calculate total bill
 @app.route("/cart/total", methods=["GET"])
 def calculate_total():
-    total = sum(cart.values())  # sum all dictionary values
+    total = sum(item["total"] for item in cart.values())
     total = round(float(total), 2)
-    breakdown = [{"name": k, "price": v} for k, v in cart.items()]
+    breakdown = [{"name": k, "price": v["price"], "qty": v["qty"], "total": v["total"]} for k, v in cart.items()]
     print(f"  TOTAL BILL: Rs.{total} | {len(cart)} item(s)")
     return jsonify({
         "success": True,
@@ -114,8 +123,8 @@ def calculate_total():
 @app.route("/cart", methods=["GET"])
 def view_cart():
     # Ensure float for round()
-    total = round(float(sum(cart.values())), 2)
-    breakdown = [{"name": k, "price": v} for k, v in cart.items()]
+    total = round(float(sum(item["total"] for item in cart.values())), 2)
+    breakdown = [{"name": k, "price": v["price"], "qty": v["qty"], "total": v["total"]} for k, v in cart.items()]
     return jsonify({
         "success": True,
         "message": f"Cart has {len(cart)} item(s). Total: Rs.{total}",
